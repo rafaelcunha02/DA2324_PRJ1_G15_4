@@ -1,0 +1,3 @@
+C:/Users/Rafa/CLionProjects/DA2324_PRJ1_G15_4/cmake-build-debug/CMakeFiles/untitled17.dir
+C:/Users/Rafa/CLionProjects/DA2324_PRJ1_G15_4/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/Rafa/CLionProjects/DA2324_PRJ1_G15_4/cmake-build-debug/CMakeFiles/rebuild_cache.dir
