@@ -1,77 +1,71 @@
-//
-// Created by Rafa on 05/03/2024.
-//
-
 #ifndef DA2324_PRJ1_G15_4_NODE_H
 #define DA2324_PRJ1_G15_4_NODE_H
 
-
 #include <iostream>
-#include <string>
 
 class Node {
-protected:
-    int id;
-    std::string location;
-
 public:
-    Node(int id, const std::string& location) : id(id), location(location) {}
+    Node() = default;  // Default constructor for empty class
 
-    virtual void printDetails() const {
-        std::cout << "Node ID: " << id << ", Location: " << location << std::endl;
-    }
-
-    virtual int getId() const { return id; }
-    virtual std::string getLocation() const { return location; }
+    virtual void printDetails() const = 0;  // Pure virtual function for printing
 };
 
 class WaterReservoir : public Node {
 protected:
+    string name;
+    string municipality;
+    int id;
     int capacity;
+    int delivery;
 
 public:
-    WaterReservoir(int id, const std::string& location, int capacity) :
-            Node(id, location), capacity(capacity) {}
+    WaterReservoir(const string& name, const string& municipality, int id, int capacity, int delivery) :
+    name(name), municipality(municipality), id(id), capacity(capacity), delivery(delivery) {}
 
     void printDetails() const override {
-        Node::printDetails();
+        std::cout << "Water Reservoir ID: " << id << std::endl;
         std::cout << "Capacity: " << capacity << " m³/sec" << std::endl;
     }
 
+    int getId() const { return id; }
     int getCapacity() const { return capacity; }
 };
 
 class PumpingStation : public Node {
 protected:
-    int power;
+    int id;
+    int Code;
 
 public:
-
-    PumpingStation(int id, const std::string& location, int power) :
-            Node(id, location), power(power) {}
+    PumpingStation(int id, int code) : id(id), Code(code) {}
 
     void printDetails() const override {
-        Node::printDetails();
-        std::cout << "Power: " << power << " kW" << std::endl;
+        std::cout << "Pumping Station ID: " << id << std::endl;
     }
 
-    int getPower() const { return power; }
+    int getId() const { return id; }
+    int getCode() const { return Code; }
 };
 
 class DeliverySite : public Node {
-public:
+protected:
+    string name;
+    int id;
+    int code;
     int demand;
+    int population;
 
-    DeliverySite(int id, const std::string& location, int demand) :
-            Node(id, location), demand(demand) {}
+public:
+    DeliverySite(const string& name, int id, int code, int demand, int population) :
+    name(name), id(id), code(code), demand(demand), population(population) {}
 
     void printDetails() const override {
-        Node::printDetails();
+        std::cout << "Delivery Site ID: " << id << std::endl;
         std::cout << "Demand: " << demand << " m³/sec" << std::endl;
     }
 
+    int getId() const { return id; }
     int getDemand() const { return demand; }
 };
-
 
 #endif //DA2324_PRJ1_G15_4_NODE_H
