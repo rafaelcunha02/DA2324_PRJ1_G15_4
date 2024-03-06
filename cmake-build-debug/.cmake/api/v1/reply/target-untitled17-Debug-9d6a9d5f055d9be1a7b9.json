@@ -106,8 +106,7 @@
 				6,
 				7,
 				8,
-				9,
-				10
+				9
 			]
 		}
 	],
@@ -149,11 +148,6 @@
 		{
 			"backtrace" : 1,
 			"path" : "data_structures/UFDS.h",
-			"sourceGroupIndex" : 1
-		},
-		{
-			"backtrace" : 1,
-			"path" : "src/Pipe.h",
 			"sourceGroupIndex" : 1
 		},
 		{

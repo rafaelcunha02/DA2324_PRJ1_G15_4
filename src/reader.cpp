@@ -37,8 +37,9 @@ void reader::readAndParseNodes() {
         }
 
         WaterReservoir WR(name, municipality, id, code, delivery);
+        codeToReservoir.insert({code, WR});
 
-        cout << "Adding vertex" << endl;
+        cout << "Map size: " << codeToReservoir.size() << endl;
         graph.addVertex(WR.getCode());
 
     }
@@ -66,6 +67,8 @@ void reader::readAndParseNodes() {
         id = stoi(ident);
         population = stoi(pop);
         City C(name, id, Code, demand, population);
+        codeToCity.insert({Code, C});
+
         graph.addVertex(C.getCode());
     }
 
@@ -84,12 +87,46 @@ void reader::readAndParseNodes() {
 
         id = stoi(Ident);
 
-        PumpingStation PS(id,Code);
 
-        cout << "adding Station" << endl;
+        PumpingStation PS(id,Code);
+        codeToStation.insert({Code, PS});
+
         graph.addVertex(PS.getCode());
 
     }
 
 }
 
+
+void reader::readAndParseEdges() {
+
+    ifstream file(R"(C:\Users\Rafa\CLionProjects\DA2324_PRJ1_G15_4\data\Pipes.csv)");
+    string line;
+
+    getline(file, line);
+    while (getline(file, line)){
+        stringstream ss(line);
+        string source, dest, capacidade, directed;
+        double capacity;
+        int isDirected;
+
+        int id;
+        getline(ss, source, ',');
+        getline(ss, dest, ',');
+        getline(ss, capacidade, ',');
+        getline(ss, directed, ',');
+
+        capacity = stod(capacidade);
+        isDirected = stoi(directed);
+
+
+        if(isDirected == 1){
+            graph.addEdge(source, dest, capacity);
+        }
+        else{
+            graph.addBidirectionalEdge(source,dest, capacity);
+        }
+
+    }
+
+}

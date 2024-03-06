@@ -9,6 +9,7 @@
 #include <string>
 #include <sstream>
 #include <fstream>
+#include <unordered_map>
 
 using namespace std;
 
@@ -20,9 +21,14 @@ class reader {
 private:
     Graph<string> graph;
 
+    unordered_map<string,WaterReservoir> codeToReservoir;
+    unordered_map<string,City> codeToCity;
+    unordered_map<string,PumpingStation> codeToStation;
+
 public:
     reader();
     void readAndParseNodes();
+    void readAndParseEdges();
 
     const Graph<string>& getGraph() const{
        return graph;
