@@ -3,9 +3,9 @@
 //
 
 #include "../data_structures/Graph.h"
-#include "WaterReservoir.h"
+#include "Reservoir.h"
 #include "City.h"
-#include "PumpingStation.h"
+#include "Station.h"
 #include <string>
 #include <sstream>
 #include <fstream>
@@ -21,9 +21,9 @@ class reader {
 private:
     Graph<string> graph;
 
-    unordered_map<string,WaterReservoir> codeToReservoir;
+    unordered_map<string,Reservoir> codeToReservoir;
     unordered_map<string,City> codeToCity;
-    unordered_map<string,PumpingStation> codeToStation;
+    unordered_map<string,Station> codeToStation;
 
 public:
     reader();

@@ -4,15 +4,15 @@
 #include <iostream>
 #include <string>
 
-class PumpingStation {
+class Station {
 
 public:
-    PumpingStation(int id, const std::string& code) : id(id), Code(code) {}
+    Station(int id, const std::string& code) : id(id), Code(code) {}
 
     int getId() const { return id; }
     const std::string& getCode() const { return Code; }
 
-    bool operator==(const PumpingStation& other) const {
+    bool operator==(const Station& other) const {
         // Compare relevant attributes for equality
         return getId() == other.getId() && Code == other.Code;
     }

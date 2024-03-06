@@ -4,10 +4,10 @@
 #include <iostream>
 #include <string>
 
-class WaterReservoir {
+class Reservoir {
 
 public:
-    WaterReservoir(const std::string& name, const std::string& municipality, int id, std::string code, int delivery) :
+    Reservoir(const std::string& name, const std::string& municipality, int id, std::string code, int delivery) :
             name(name), municipality(municipality), id(id), code(code), delivery(delivery) {}
 
     std::string getName() const { return name; }
@@ -16,7 +16,7 @@ public:
     std::string getCode() const { return code; }
     int getDelivery() const { return delivery; }
 
-    bool operator==(const WaterReservoir& other) const {
+    bool operator==(const Reservoir& other) const {
         // Compare relevant attributes for equality
         return getId() == other.getId() && name == other.name && municipality == other.municipality;
     }

@@ -152,12 +152,12 @@
 		},
 		{
 			"backtrace" : 1,
-			"path" : "src/WaterReservoir.h",
+			"path" : "src/Reservoir.h",
 			"sourceGroupIndex" : 1
 		},
 		{
 			"backtrace" : 1,
-			"path" : "src/PumpingStation.h",
+			"path" : "src/Station.h",
 			"sourceGroupIndex" : 1
 		},
 		{

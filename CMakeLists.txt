@@ -10,7 +10,7 @@ add_executable(untitled17 main.cpp
         data_structures/MutablePriorityQueue.h
         data_structures/UFDS.cpp
         data_structures/UFDS.h
-        src/WaterReservoir.h
-        src/PumpingStation.h
+        src/Reservoir.h
+        src/Station.h
         src/City.h
 )

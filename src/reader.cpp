@@ -8,7 +8,7 @@ reader::reader() = default;
 
 void reader::readAndParseNodes() {
 
-    ifstream file(R"(C:\Users\Rafa\CLionProjects\DA2324_PRJ1_G15_4\data\Reservoir.csv)");
+    ifstream file("../data/Reservoir.csv");
     string line;
 
     getline(file, line);
@@ -36,7 +36,7 @@ void reader::readAndParseNodes() {
             continue; // Skip processing this line and move to the next one
         }
 
-        WaterReservoir WR(name, municipality, id, code, delivery);
+        Reservoir WR(name, municipality, id, code, delivery);
         codeToReservoir.insert({code, WR});
 
         cout << "Map size: " << codeToReservoir.size() << endl;
@@ -46,7 +46,7 @@ void reader::readAndParseNodes() {
 
     //---------------------------------------//
 
-    ifstream file2(R"(C:\Users\Rafa\CLionProjects\DA2324_PRJ1_G15_4\data\Cities.csv)");
+    ifstream file2("../data/Cities.csv");
     string line2;
 
     getline(file2, line2);
@@ -74,7 +74,7 @@ void reader::readAndParseNodes() {
 
     //----------------------------------//
 
-    ifstream file3(R"(C:\Users\Rafa\CLionProjects\DA2324_PRJ1_G15_4\data\Stations.csv)");
+    ifstream file3("../data/Stations.csv");
     string line3;
 
     getline(file3, line3);
@@ -88,7 +88,7 @@ void reader::readAndParseNodes() {
         id = stoi(Ident);
 
 
-        PumpingStation PS(id,Code);
+        Station PS(id, Code);
         codeToStation.insert({Code, PS});
 
         graph.addVertex(PS.getCode());
@@ -100,7 +100,7 @@ void reader::readAndParseNodes() {
 
 void reader::readAndParseEdges() {
 
-    ifstream file(R"(C:\Users\Rafa\CLionProjects\DA2324_PRJ1_G15_4\data\Pipes.csv)");
+    ifstream file("../data/Pipes.csv");
     string line;
 
     getline(file, line);

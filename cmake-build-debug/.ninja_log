@@ -1,9 +1,13 @@
 # ninja log v5
 69	432	7313693532682774	CMakeFiles/untitled17.dir/src/parsing.cpp.obj	66c4eaffe627313e
-7	2136	7314371557691811	CMakeFiles/untitled17.dir/main.cpp.obj	f94b2af979b38cec
-76	2267	7314371559212585	CMakeFiles/untitled17.dir/src/reader.cpp.obj	f62023606a236061
-2267	2941	7314371565537423	untitled17.exe	ce20d38858a8e9ea
-45	539	7313838992993791	CMakeFiles/untitled17.dir/data_structures/UFDS.cpp.obj	cc959a309a98a1da
 10	2513	7314384072376567	CMakeFiles/untitled17.dir/main.cpp.obj	f94b2af979b38cec
 118	2964	7314384076914436	CMakeFiles/untitled17.dir/src/reader.cpp.obj	f62023606a236061
 2965	3740	7314384084381032	untitled17.exe	ce20d38858a8e9ea
+45	539	7313838992993791	CMakeFiles/untitled17.dir/data_structures/UFDS.cpp.obj	cc959a309a98a1da
+31	1594	7314504395750044	CMakeFiles/untitled17.dir/main.cpp.obj	f94b2af979b38cec
+112	1844	7314504398004537	CMakeFiles/untitled17.dir/src/reader.cpp.obj	f62023606a236061
+1845	2401	7314504403697551	untitled17.exe	ce20d38858a8e9ea
+6	1484	7314505371209327	CMakeFiles/untitled17.dir/src/reader.cpp.obj	f62023606a236061
+1485	1918	7314505375339216	untitled17.exe	ce20d38858a8e9ea
+3	1614	7314505805856318	CMakeFiles/untitled17.dir/src/reader.cpp.obj	f62023606a236061
+1615	2099	7314505810471555	untitled17.exe	ce20d38858a8e9ea
