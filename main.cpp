@@ -1,6 +1,10 @@
+#include "src/reader.h"
 #include <iostream>
+using namespace std;
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
-    return 0;
+    reader reader;
+    reader.readAndParseNodes();
+    auto graph = reader.getGraph();
+    cout << graph.getNumVertex();
 }

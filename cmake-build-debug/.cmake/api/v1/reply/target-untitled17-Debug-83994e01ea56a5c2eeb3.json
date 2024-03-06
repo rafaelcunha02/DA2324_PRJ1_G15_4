@@ -105,7 +105,9 @@
 				4,
 				6,
 				7,
-				8
+				8,
+				9,
+				10
 			]
 		}
 	],
@@ -151,12 +153,22 @@
 		},
 		{
 			"backtrace" : 1,
-			"path" : "src/Node.h",
+			"path" : "src/Pipe.h",
 			"sourceGroupIndex" : 1
 		},
 		{
 			"backtrace" : 1,
-			"path" : "src/Pipe.h",
+			"path" : "src/WaterReservoir.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/PumpingStation.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/City.h",
 			"sourceGroupIndex" : 1
 		}
 	],

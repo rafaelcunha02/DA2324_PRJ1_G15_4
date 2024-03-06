@@ -1,6 +1,3 @@
-// Original code by Gonçalo Leão
-// Updated by DA 2023/2024 Team
-
 #ifndef DA_TP_CLASSES_GRAPH
 #define DA_TP_CLASSES_GRAPH
 
@@ -9,10 +6,7 @@
 #include <queue>
 #include <limits>
 #include <algorithm>
-#include <unordered_map>
 #include "../data_structures/MutablePriorityQueue.h"
-#include <unordered_set>
-using namespace std;
 
 template <class T>
 class Edge;
@@ -133,9 +127,6 @@ public:
     bool isDAG() const;
     bool dfsIsDAG(Vertex<T> *v) const;
     std::vector<T> topsort() const;
-
-    vector<Vertex<T> *> getShortestPath(const T &source, const T &target);
-
 protected:
     std::vector<Vertex<T> *> vertexSet;    // vertex set
 
@@ -146,9 +137,6 @@ protected:
      * Finds the index of the vertex with a given content.
      */
     int findVertexIdx(const T &in) const;
-
-    void dijkstra(const T &source);
-
 };
 
 void deleteMatrix(int **m, int n);
@@ -672,11 +660,5 @@ Graph<T>::~Graph() {
     deleteMatrix(distMatrix, vertexSet.size());
     deleteMatrix(pathMatrix, vertexSet.size());
 }
-
-
-
-
-
-
 
 #endif /* DA_TP_CLASSES_GRAPH */
