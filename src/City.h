@@ -17,7 +17,6 @@ public:
     int getPopulation() const { return population; }
 
     bool operator==(const City& other) const {
-        // Compare relevant attributes for equality
         return getId() == other.getId() && name == other.name && code == other.code;
     }
 

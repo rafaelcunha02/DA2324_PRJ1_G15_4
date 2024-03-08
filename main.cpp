@@ -8,9 +8,9 @@ int main() {
     reader.readAndParseEdges();
     auto graph = reader.getGraph();
     size_t count = 0;
-    for (auto v : graph.getVertexSet()){
-        count += v->getAdj().size();
-    }
 
-    cout << "number of edges: " << count;
+    reader.maxFlowEachCity();
+
+
+
 }

@@ -17,8 +17,11 @@ public:
     int getDelivery() const { return delivery; }
 
     bool operator==(const Reservoir& other) const {
-        // Compare relevant attributes for equality
         return getId() == other.getId() && name == other.name && municipality == other.municipality;
+    }
+
+    void setDelivery(int delivery){
+        this->delivery = delivery;
     }
 
 private:

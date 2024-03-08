@@ -13,7 +13,6 @@ public:
     const std::string& getCode() const { return Code; }
 
     bool operator==(const Station& other) const {
-        // Compare relevant attributes for equality
         return getId() == other.getId() && Code == other.Code;
     }
 

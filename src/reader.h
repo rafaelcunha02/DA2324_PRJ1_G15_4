@@ -25,6 +25,8 @@ private:
     unordered_map<string,City> codeToCity;
     unordered_map<string,Station> codeToStation;
 
+    void edmondsKarp(Graph<string>& g, const string& source, const string& target);
+
 public:
     reader();
     void readAndParseNodes();
@@ -34,6 +36,13 @@ public:
        return graph;
     }
 
+    void maxFlowSingleCity(const string &City);
+
+    void maxFlowEachCity();
+
+    void setGraph(const Graph<string>& g){
+        graph = g;
+    }
 };
 
 
