@@ -178,6 +178,10 @@ bool System::findAugmentingPath(Graph<string> *g, Vertex<string> *s, Vertex<stri
         for(auto e: v->getAdj()) {
             testAndVisit(q, e, e->getDest(), e->getWeight() - e->getFlow());
         }
+
+        for(auto e: v->getIncoming()) {
+            testAndVisit(q, e, e->getDest(), e->getWeight() - e->getFlow());
+        }
     }
 // Return true if a path to the target is found, false otherwise
     return t->isVisited();
@@ -374,10 +378,31 @@ void System::averageFlowPipes(){
     cout << "Final stats--------------------" << endl;
     cout << "Average flow per pipe: " << total/count << endl;
     cout << "Average percentage of flow per pipe: " << totalmedias / count << endl;
+
+
+    //variancia
+    double n = 0;
+    double sum = 0;
+    double sum_sqr = 0;
+
+    for (auto v: graph.getVertexSet()){
+        for (auto e : v->getAdj()){
+
+            n = n+1;
+            sum = sum + e->getFlow();
+            sum_sqr = sum_sqr + (e->getFlow() * e->getFlow());
+        }
+    }
+
+    auto mean = sum/n;
+    auto variance = (sum_sqr - sum*mean)/(n-1);
+
+    cout << "Variance: " << variance;
+
 }
 
 void System::balanceLoad(){
 
-
-
 }
+
+

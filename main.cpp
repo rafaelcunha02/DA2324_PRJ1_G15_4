@@ -16,5 +16,7 @@ int main() {
 
     system.averageFlowPipes();
 
+    system.removeReservoir("R_1");
+
 
 }

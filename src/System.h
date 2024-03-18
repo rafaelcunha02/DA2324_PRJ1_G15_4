@@ -25,6 +25,7 @@ private:
     unordered_map<string,City> codeToCity;
     unordered_map<string,Station> codeToStation;
 
+
     void edmondsKarp(Graph<string>& g, const string& source, const string& target);
 
 public:
@@ -57,6 +58,15 @@ public:
     void balanceLoad();
 
     void averageFlowPipes();
+
+
+    void removeReservoir(const string& r);
+
+    void removeFlowAlongPath(Vertex<string> *s, Vertex<string> *t, double f);
+
+    void removeFlowAlongPath(Vertex<string> *s, double f);
+
+    void updatePath(const string &u, const string &r);
 };
 
 
