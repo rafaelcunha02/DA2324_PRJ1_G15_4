@@ -14,6 +14,7 @@ int main() {
 
     system.enoughWater();
 
+    system.averageFlowPipes();
 
 
 }

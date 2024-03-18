@@ -1,5 +1,6 @@
 #include "System.h"
 #include <string>
+#include <iomanip>
 
 
 using namespace std;
@@ -273,6 +274,12 @@ void System::maxFlowSingleCity(const string &city) {
 
     edmondsKarp(graph2,superSource.getCode(),superTarget.getCode());
 
+
+
+    graph2.removeVertex(superSource.getCode());
+    graph2.removeVertex(superTarget.getCode());
+
+
     double count = 0;
     for (auto& Edge : graph2.findVertex(city)->getIncoming()){
         count += Edge->getFlow();
@@ -283,16 +290,19 @@ void System::maxFlowSingleCity(const string &city) {
 
     std::ofstream file("../data/max_flow_output.csv", std::ios::app);
         file << codeToCity.at(city).getCode() << "," << count << std::endl;
-        cout << "Max flow for " << codeToCity.at(city).getCode() << ": " << count << " cube meters / second " << endl;
-}
+    cout << "| " << setw(12) << std::left << codeToCity.at(city).getCode() << " | " << setw(12) << count << " |" << endl;
+    cout << "+--------------+--------------+" << endl;}
 
 
 void System::maxFlowEachCity(){
 
     std::ofstream file("../data/max_flow_output.csv", std::ios::trunc);
     std::ofstream file2("../data/max_flow_output.csv", std::ios::app);
-    file2 << "City Code" << "," << "Max Flow" << std::endl;
+    file2 << "CityCode" << "," << "Max Flow" << std::endl;
 
+    cout << "+--------------+--------------+" << endl;
+    cout << "| City Code    | Max Flow     |" << endl;
+    cout << "+--------------+--------------+" << endl;
 
 
 
@@ -311,31 +321,63 @@ void System::maxFlowEachCity(){
         }
     }
 
+
+
+
 }
 
 
 void System::enoughWater(){
-    auto graph2 = graph;
+    ifstream file("../data/max_flow_output.csv");
+    string line;
+
+    getline(file, line);
+    while (getline(file, line)){
+        stringstream ss(line);
+        string code, max;
+
+        getline(ss, code, ',');
+        getline(ss, max, ',');
+
+        int maxflow = stoi(max);
+
+        if (maxflow < codeToCity.at(code).getDemand()){
+            cout << "City: " << codeToCity.at(code).getCode() << "   deficit: " << codeToCity.at(code).getDemand() - maxflow << endl;
+        }
+
+    }
+}
 
 
-    for (auto& v : graph2.getVertexSet()){
-        for (auto& edge : v->getAdj()){
-            edge->setFlow(0);
+void System::averageFlowPipes(){
+
+    double total = 0;
+    double totalmedias = 0;
+    double count = 0;
+    for (auto v : graph.getVertexSet()){
+        for (auto e : v->getAdj()){
+
+            auto source = e->getOrig()->getInfo();
+            auto target = e->getDest()->getInfo();
+
+            cout << "Pipe from " << source << " to " << target << ": "
+            << e->getFlow() << "/" << e->getWeight()
+            << " (" << (e->getFlow()/e->getWeight()) * 100 << "%)" << endl;
+            count++;
+            total += e->getFlow();
+            totalmedias += (e->getFlow()/e->getWeight()) * 100;
+
         }
     }
 
+    cout << "---------------------";
+    cout << "Final stats--------------------" << endl;
+    cout << "Average flow per pipe: " << total/count << endl;
+    cout << "Average percentage of flow per pipe: " << totalmedias / count << endl;
+}
 
-    for (auto v : graph2.getVertexSet()){
-        if (v->getInfo()[0] == 'C'){
-            auto sum = 0;
-            for (auto e : v->getIncoming()){
-                sum += e->getFlow();
-            }
-            auto city = codeToCity.at(v->getInfo());
-            if (sum <= city.getDemand()){
-                cout << "City: " << city.getCode() << " deficit: " << city.getDemand() - sum << " cube meters" << endl;
-            }
-        }
-    }
+void System::balanceLoad(){
+
+
 
 }

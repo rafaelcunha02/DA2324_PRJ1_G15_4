@@ -53,6 +53,10 @@ public:
     void augmentFlowAlongPath(Vertex<string> *s, Vertex<string> *t, double f);
 
     void enoughWater();
+
+    void balanceLoad();
+
+    void averageFlowPipes();
 };
 
 
