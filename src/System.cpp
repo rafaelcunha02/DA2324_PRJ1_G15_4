@@ -1,12 +1,12 @@
-#include "reader.h"
+#include "System.h"
 #include <string>
 
 
 using namespace std;
 
-reader::reader() = default;
+System::System() = default;
 
-void reader::readAndParseNodes() {
+void System::readAndParseNodes() {
 
     ifstream file("../data/Reservoirs_Madeira.csv");
     string line;
@@ -34,14 +34,12 @@ void reader::readAndParseNodes() {
         Reservoir WR(name, municipality, id, code, delivery);
         codeToReservoir.insert({code, WR});
 
-        cout << "Map size: " << codeToReservoir.size() << endl;
         graph.addVertex(WR.getCode());
 
     }
 
     //---------------------------------------//
 
-    cout << endl << "chega a cities" << endl;
 
 
     ifstream file2("../data/Cities_Madeira.csv");
@@ -72,7 +70,6 @@ void reader::readAndParseNodes() {
 
     //----------------------------------//
 
-    cout << endl << "chega a stations" << endl;
 
     int count = 0;
 
@@ -98,15 +95,13 @@ void reader::readAndParseNodes() {
 
     }
 
-    cout << count;
     count++;
 
 }
 
 
-void reader::readAndParseEdges() {
+void System::readAndParseEdges() {
 
-    cout << endl << "Chega as edges" << endl;
 
     ifstream file("../data/Pipes_Madeira.csv");
     string line;
@@ -142,7 +137,7 @@ void reader::readAndParseEdges() {
 
 
 
-void reader::testAndVisit(std::queue< Vertex<string>*> &q, Edge<string> *e, Vertex<string> *w, double residual) {
+void System::testAndVisit(std::queue< Vertex<string>*> &q, Edge<string> *e, Vertex<string> *w, double residual) {
 // Check if the vertex 'w' is not visited and there is residual capacity
     if (! w->isVisited() && residual > 0) {
         if (codeToReservoir.find(w->getInfo()) != codeToReservoir.end()){
@@ -163,7 +158,7 @@ void reader::testAndVisit(std::queue< Vertex<string>*> &q, Edge<string> *e, Vert
 
 
 // Function to find an augmenting path using Breadth-First Search
-bool reader::findAugmentingPath(Graph<string> *g, Vertex<string> *s, Vertex<string> *t) {
+bool System::findAugmentingPath(Graph<string> *g, Vertex<string> *s, Vertex<string> *t) {
 // Mark all vertices as not visited
     for(auto v : g->getVertexSet()) {
         v->setVisited(false);
@@ -175,7 +170,6 @@ bool reader::findAugmentingPath(Graph<string> *g, Vertex<string> *s, Vertex<stri
 // BFS to find an augmenting path
     while( ! q.empty() && ! t->isVisited()) {
 
-        cout << "Finding augmenting path" << endl;
 
         auto v = q.front();
         q.pop();
@@ -191,7 +185,7 @@ bool reader::findAugmentingPath(Graph<string> *g, Vertex<string> *s, Vertex<stri
 
 
 
-double reader::findMinResidualAlongPath(Vertex<string> *s, Vertex<string> *t) {
+double System::findMinResidualAlongPath(Vertex<string> *s, Vertex<string> *t) {
     double f = INF;
 // Traverse the augmenting path to find the minimum residual capacity
 
@@ -218,11 +212,10 @@ double reader::findMinResidualAlongPath(Vertex<string> *s, Vertex<string> *t) {
     return f;
 }
 // Function to augment flow along the augmenting path with the given flow value
-void reader::augmentFlowAlongPath(Vertex<string> *s, Vertex<string> *t, double f) {
+void System::augmentFlowAlongPath(Vertex<string> *s, Vertex<string> *t, double f) {
 // Traverse the augmenting path and update the flow values accordingly
 
     for (auto v = t; v != s; ) {
-        cout << "Augment flow" << endl;
 
         auto e = v->getPath();
         double flow = e->getFlow();
@@ -237,7 +230,7 @@ void reader::augmentFlowAlongPath(Vertex<string> *s, Vertex<string> *t, double f
     }
 }
 
-void reader::edmondsKarp(Graph<std::string>& g, const std::string &source, const std::string &target) {
+void System::edmondsKarp(Graph<std::string>& g, const std::string &source, const std::string &target) {
     // Find source and target vertices in the graph
     Vertex<string>* s = g.findVertex(source);
     Vertex<string>* t = g.findVertex(target);
@@ -247,13 +240,12 @@ void reader::edmondsKarp(Graph<std::string>& g, const std::string &source, const
 
 // While there is an augmenting path, augment the flow along the path
     while( findAugmentingPath( &g, s, t) ) {
-        cout << "Edmonds" << endl;
         double f = findMinResidualAlongPath(s, t);
         augmentFlowAlongPath(s, t, f);
     }
 }
 
-void reader::maxFlowSingleCity(const string &city) {
+void System::maxFlowSingleCity(const string &city) {
 
     Reservoir superSource("superS", "", 0, "r_Super", INF);
     City superTarget("superT",0,"c_Super",INF,INF);
@@ -288,16 +280,62 @@ void reader::maxFlowSingleCity(const string &city) {
     }
 
     codeToReservoir = map2;
-    cout << "Max flow for " << codeToCity.at(city).getCode() << ": " << count << endl;
+
+    std::ofstream file("../data/max_flow_output.csv", std::ios::app);
+        file << codeToCity.at(city).getCode() << "," << count << std::endl;
+        cout << "Max flow for " << codeToCity.at(city).getCode() << ": " << count << " cube meters / second " << endl;
 }
 
 
-void reader::maxFlowEachCity(){
+void System::maxFlowEachCity(){
 
-    for (auto v : graph.getVertexSet()){
+    std::ofstream file("../data/max_flow_output.csv", std::ios::trunc);
+    std::ofstream file2("../data/max_flow_output.csv", std::ios::app);
+    file2 << "City Code" << "," << "Max Flow" << std::endl;
+
+
+
+
+
+    auto graph2 = graph;
+
+    for (auto& v : graph2.getVertexSet()){
+        for (auto& edge : v->getAdj()){
+            edge->setFlow(0);
+        }
+    }
+
+    for (auto v : graph2.getVertexSet()){
         if (v->getInfo()[0] == 'C'){
             maxFlowSingleCity(v->getInfo());
         }
     }
+
 }
 
+
+void System::enoughWater(){
+    auto graph2 = graph;
+
+
+    for (auto& v : graph2.getVertexSet()){
+        for (auto& edge : v->getAdj()){
+            edge->setFlow(0);
+        }
+    }
+
+
+    for (auto v : graph2.getVertexSet()){
+        if (v->getInfo()[0] == 'C'){
+            auto sum = 0;
+            for (auto e : v->getIncoming()){
+                sum += e->getFlow();
+            }
+            auto city = codeToCity.at(v->getInfo());
+            if (sum <= city.getDemand()){
+                cout << "City: " << city.getCode() << " deficit: " << city.getDemand() - sum << " cube meters" << endl;
+            }
+        }
+    }
+
+}

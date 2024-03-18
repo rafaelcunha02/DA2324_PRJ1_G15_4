@@ -17,7 +17,7 @@ using namespace std;
 #define DA2324_PRJ1_G15_4_PARSING_H
 
 
-class reader {
+class System {
 private:
     Graph<string> graph;
 
@@ -28,7 +28,7 @@ private:
     void edmondsKarp(Graph<string>& g, const string& source, const string& target);
 
 public:
-    reader();
+    System();
     void readAndParseNodes();
     void readAndParseEdges();
 
@@ -51,6 +51,8 @@ public:
     double findMinResidualAlongPath(Vertex<string> *s, Vertex<string> *t);
 
     void augmentFlowAlongPath(Vertex<string> *s, Vertex<string> *t, double f);
+
+    void enoughWater();
 };
 
 

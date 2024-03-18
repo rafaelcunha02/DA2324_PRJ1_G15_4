@@ -1,15 +1,18 @@
-#include "src/reader.h"
+#include "src/System.h"
 #include <iostream>
 using namespace std;
 
 int main() {
-    reader reader;
-    reader.readAndParseNodes();
-    reader.readAndParseEdges();
-    auto graph = reader.getGraph();
-    size_t count = 0;
+    System system;
+    system.readAndParseNodes();
+    system.readAndParseEdges();
+    auto graph = system.getGraph();
 
-    reader.maxFlowSingleCity("C_6");
+    system.maxFlowEachCity();
+
+    cout << endl << endl;
+
+    system.enoughWater();
 
 
 
