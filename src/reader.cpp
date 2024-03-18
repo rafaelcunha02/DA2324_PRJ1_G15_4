@@ -8,7 +8,7 @@ reader::reader() = default;
 
 void reader::readAndParseNodes() {
 
-    ifstream file("../data/Reservoir.csv");
+    ifstream file("../data/Reservoirs_Madeira.csv");
     string line;
 
     getline(file, line);
@@ -41,7 +41,10 @@ void reader::readAndParseNodes() {
 
     //---------------------------------------//
 
-    ifstream file2("../data/Cities.csv");
+    cout << endl << "chega a cities" << endl;
+
+
+    ifstream file2("../data/Cities_Madeira.csv");
     string line2;
 
     getline(file2, line2);
@@ -69,7 +72,12 @@ void reader::readAndParseNodes() {
 
     //----------------------------------//
 
-    ifstream file3("../data/Stations.csv");
+    cout << endl << "chega a stations" << endl;
+
+    int count = 0;
+
+
+    ifstream file3("../data/Stations_Madeira.csv");
     string line3;
 
     getline(file3, line3);
@@ -90,12 +98,17 @@ void reader::readAndParseNodes() {
 
     }
 
+    cout << count;
+    count++;
+
 }
 
 
 void reader::readAndParseEdges() {
 
-    ifstream file("../data/Pipes.csv");
+    cout << endl << "Chega as edges" << endl;
+
+    ifstream file("../data/Pipes_Madeira.csv");
     string line;
 
     getline(file, line);
@@ -129,19 +142,28 @@ void reader::readAndParseEdges() {
 
 
 
-void testAndVisit(std::queue< Vertex<string>*> &q, Edge<string> *e, Vertex<string> *w, double residual) {
+void reader::testAndVisit(std::queue< Vertex<string>*> &q, Edge<string> *e, Vertex<string> *w, double residual) {
 // Check if the vertex 'w' is not visited and there is residual capacity
     if (! w->isVisited() && residual > 0) {
-// Mark 'w' as visited, set the path through which it was reached, and enqueue it
-        w->setVisited(true);
-        w->setPath(e);
-        q.push(w);
+        if (codeToReservoir.find(w->getInfo()) != codeToReservoir.end()){
+            if (codeToReservoir.at(w->getInfo()).getDelivery() > 0){
+                // Mark 'w' as visited, set the path through which it was reached, and enqueue it
+                w->setVisited(true);
+                w->setPath(e);
+                q.push(w);
+            }
+        }
+        else{
+            w->setVisited(true);
+            w->setPath(e);
+            q.push(w);
+        }
     }
 }
 
 
 // Function to find an augmenting path using Breadth-First Search
-bool findAugmentingPath(Graph<string> *g, Vertex<string> *s, Vertex<string> *t) {
+bool reader::findAugmentingPath(Graph<string> *g, Vertex<string> *s, Vertex<string> *t) {
 // Mark all vertices as not visited
     for(auto v : g->getVertexSet()) {
         v->setVisited(false);
@@ -152,6 +174,9 @@ bool findAugmentingPath(Graph<string> *g, Vertex<string> *s, Vertex<string> *t) 
     q.push(s);
 // BFS to find an augmenting path
     while( ! q.empty() && ! t->isVisited()) {
+
+        cout << "Finding augmenting path" << endl;
+
         auto v = q.front();
         q.pop();
 // Process outgoing edges
@@ -166,14 +191,23 @@ bool findAugmentingPath(Graph<string> *g, Vertex<string> *s, Vertex<string> *t) 
 
 
 
-double findMinResidualAlongPath(Vertex<string> *s, Vertex<string> *t) {
+double reader::findMinResidualAlongPath(Vertex<string> *s, Vertex<string> *t) {
     double f = INF;
 // Traverse the augmenting path to find the minimum residual capacity
+
     for (auto v = t; v != s; ) {
         auto e = v->getPath();
         if (e->getDest() == v) {
             f = std::min(f, e->getWeight() - e->getFlow());
+
             v = e->getOrig();
+
+            if (codeToReservoir.find(v->getInfo()) != codeToReservoir.end()){
+                double delivery = codeToReservoir.at(v->getInfo()).getDelivery();
+                f = std::min(f, delivery);
+                codeToReservoir.at(v->getInfo()).setDelivery(delivery - f);
+            }
+
         }
         else {
             f = std::min(f, e->getFlow());
@@ -184,10 +218,12 @@ double findMinResidualAlongPath(Vertex<string> *s, Vertex<string> *t) {
     return f;
 }
 // Function to augment flow along the augmenting path with the given flow value
-void augmentFlowAlongPath(Vertex<string> *s, Vertex<string> *t, double f) {
+void reader::augmentFlowAlongPath(Vertex<string> *s, Vertex<string> *t, double f) {
 // Traverse the augmenting path and update the flow values accordingly
 
     for (auto v = t; v != s; ) {
+        cout << "Augment flow" << endl;
+
         auto e = v->getPath();
         double flow = e->getFlow();
         if (e->getDest() == v) {
@@ -211,48 +247,48 @@ void reader::edmondsKarp(Graph<std::string>& g, const std::string &source, const
 
 // While there is an augmenting path, augment the flow along the path
     while( findAugmentingPath( &g, s, t) ) {
+        cout << "Edmonds" << endl;
         double f = findMinResidualAlongPath(s, t);
-        auto delivery = codeToReservoir.at(source).getDelivery();
-        if (f > delivery){
-            f = delivery;
-            delivery = 0;
-        }
-        else{
-            delivery -= f;
-        }
-
-        codeToReservoir.at(source).setDelivery(delivery);
         augmentFlowAlongPath(s, t, f);
-        if (delivery == 0){
-            break;
-        }
     }
 }
 
 void reader::maxFlowSingleCity(const string &city) {
 
-    auto map2 = codeToReservoir;
+    Reservoir superSource("superS", "", 0, "r_Super", INF);
+    City superTarget("superT",0,"c_Super",INF,INF);
 
-    for (auto& v : graph.getVertexSet()){
+    auto map2 = codeToReservoir;
+    auto graph2 = graph;
+
+    graph2.addVertex(superSource.getCode());
+    graph2.addVertex(superTarget.getCode());
+
+    for (auto& v : graph2.getVertexSet()){
         for (auto& edge : v->getAdj()){
             edge->setFlow(0);
         }
     }
 
-    for (auto& v : graph.getVertexSet()){
+    for (auto& v : graph2.getVertexSet()){
         if (v->getInfo()[0] == 'R'){
-            edmondsKarp(graph, v->getInfo(), city);
+            graph2.addEdge(superSource.getCode(), v->getInfo(), INF);
+        }
+        if (v->getInfo()[0] == 'C'){
+            graph2.addEdge(v->getInfo(),superTarget.getCode(), INF);
         }
     }
 
+    edmondsKarp(graph2,superSource.getCode(),superTarget.getCode());
+
     double count = 0;
-    for (auto& Edge : graph.findVertex(city)->getIncoming()){
+    for (auto& Edge : graph2.findVertex(city)->getIncoming()){
         count += Edge->getFlow();
 
     }
 
     codeToReservoir = map2;
-    cout << "Max flow for " << codeToCity.at(city).getName() << ": " << count << endl;
+    cout << "Max flow for " << codeToCity.at(city).getCode() << ": " << count << endl;
 }
 
 

@@ -9,7 +9,7 @@ int main() {
     auto graph = reader.getGraph();
     size_t count = 0;
 
-    reader.maxFlowEachCity();
+    reader.maxFlowSingleCity("C_6");
 
 
 
