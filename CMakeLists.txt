@@ -13,4 +13,5 @@ add_executable(untitled17 main.cpp
         src/Reservoir.h
         src/Station.h
         src/City.h
+        src/Pipe.h
 )

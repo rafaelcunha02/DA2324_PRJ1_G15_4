@@ -12,11 +12,33 @@ int main() {
 
     cout << endl << endl;
 
-    system.enoughWater();
 
-    system.averageFlowPipes();
+    system.fillPipeMap();
 
-    system.removeReservoir("R_1");
+    system.removePS("PS_6");
+    system.removePS("PS_6");
+    system.removePS("PS_6");
+    system.removePS("PS_6");
+    system.removePS("PS_6");
+
+
+
+
+
+
+
+
+    cout << endl;
+
+    for (auto edge : graph.findVertex("C_1")->getIncoming()){
+        cout << edge->getOrig()->getInfo() << endl;
+    }
+
+
+
+
 
 
 }
+
+
