@@ -303,6 +303,22 @@ void System::fillPipeMap() {
 
     graph.removeVertex(superSource.getCode());
     graph.removeVertex(superTarget.getCode());
+
+    std::ofstream file("../data/max_flow_output.csv", std::ios::trunc);
+    std::ofstream file2("../data/max_flow_output.csv", std::ios::app);
+    file2 << "CityCode" << "," << "Max Flow" << std::endl;
+
+    double count = 0;
+    for (auto v : graph.getVertexSet()){
+        if (v->getInfo()[0] == 'C'){
+            count = 0;
+            for (auto e : v->getIncoming()){
+                count += e->getFlow();
+            }
+            file2 << codeToCity.at(v->getInfo()).getCode() << "," << count << std::endl;
+        }
+    }
+
 }
 
 void System::maxFlowSingleCity(const string &city) {
@@ -371,10 +387,6 @@ void System::maxFlowSingleCity(const string &city) {
 
 
 void System::maxFlowEachCity(){
-
-    std::ofstream file("../data/max_flow_output.csv", std::ios::trunc);
-    std::ofstream file2("../data/max_flow_output.csv", std::ios::app);
-    file2 << "CityCode" << "," << "Max Flow" << std::endl;
 
     cout << "+--------------+--------------+" << endl;
     cout << "| City Code    | Max Flow     |" << endl;
