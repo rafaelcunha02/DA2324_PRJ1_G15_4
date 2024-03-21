@@ -256,10 +256,8 @@ void System::edmondsKarp(Graph<std::string>& g, const std::string &source, const
 }
 
 
-void System::fillPipeMap() {
+void System::initialize() {
 
-
-    Graph<string> graph2 = graph;
     Reservoir superSource("superS", "", 0, "r_Super", INF);
     City superTarget("superT",0,"c_Super",INF,INF);
 
@@ -324,7 +322,7 @@ void System::fillPipeMap() {
 
 void System::maxFlowSingleCity(const string &city) {
 
-    auto maxflow = codeToCity.at(city).getMaxFlow();
+    double maxflow = codeToCity.at(city).getMaxFlow();
 
     cout << "| " << setw(12) << std::left << codeToCity.at(city).getCode() << " | " << setw(12) << maxflow << " |" << endl;
     cout << "+--------------+--------------+" << endl;
@@ -332,49 +330,28 @@ void System::maxFlowSingleCity(const string &city) {
 
 
 void System::maxFlowEachCity(){
-
     cout << "+--------------+--------------+" << endl;
     cout << "| City Code    | Max Flow     |" << endl;
     cout << "+--------------+--------------+" << endl;
-
-    Graph<string> graph2 = graph;
-
     for (auto& v : graph.getVertexSet()){
         for (auto& edge : v->getAdj()){
             edge->setFlow(0);
         }
     }
-
-    for (auto v : graph.getVertexSet()){
-        if (v->getInfo()[0] == 'C'){
-            maxFlowSingleCity(v->getInfo());
-        }
+    for (const auto& par : codeToCity){
+        maxFlowSingleCity(par.first);
     }
 
-    graph = graph2;
 }
 
-
 void System::enoughWater(){
-    ifstream file("../data/max_flow_output.csv");
-    string line;
+    for (const auto& par : codeToCity){
+        auto maxflow = par.second.getMaxFlow();
 
-    int count  = 0;
-    getline(file, line);
-    while (getline(file, line)){
-        stringstream ss(line);
-        string code, max;
-
-        getline(ss, code, ',');
-        getline(ss, max, ',');
-
-        int maxflow = stoi(max);
-
-        if (maxflow < codeToCity.at(code).getDemand()){
-            cout << "City: " << codeToCity.at(code).getCode() << "   deficit: " << codeToCity.at(code).getDemand() - maxflow << endl;
+        if (maxflow < par.second.getDemand()){
+            cout << "City: " << par.second.getCode() << "   deficit: " << par.second.getDemand() - maxflow << endl;
         }
     }
-
 }
 
 
@@ -445,11 +422,6 @@ void System::removePS(const string& ps){
         }
         if (v->getInfo()[0] == 'C'){
             graph.addEdge(v->getInfo(),superTarget.getCode(), INF);
-            double delivery = 0;
-            for (auto edge : v->getIncoming()){
-                delivery += edge->getFlow();
-            }
-            deliveries[v->getInfo()] = delivery;
         }
     }
 
@@ -490,7 +462,7 @@ void System::removePS(const string& ps){
             for (auto edge : v->getIncoming()) {
                 delafter += edge->getFlow();
             }
-            double before = deliveries[v->getInfo()];
+            double before = codeToCity.at(v->getInfo()).getMaxFlow();
             double difference = delafter - before;
             cout << "| " << left << setw(19) << v->getInfo() << "| " << setw(13) << before << "  | " << setw(13) << delafter << " | " << setw(13) << difference << "|" << endl;
         }
@@ -517,29 +489,24 @@ void System::removePS(const string& ps){
 }
 
 
-void System::removePipe(Graph<string> g, const string& pa, const string& pb){
+void System::removePipe(const string& pa, const string& pb){
 
     auto map2 = codeToReservoir;
 
     Reservoir superSource("superS", "", 0, "r_Super", INF);
     City superTarget("superT",0,"c_Super",INF,INF);
 
-    g.addVertex(superSource.getCode());
-    g.addVertex(superTarget.getCode());
+    graph.addVertex(superSource.getCode());
+    graph.addVertex(superTarget.getCode());
 
     unordered_map<string,double> deliveries;
 
-    for (auto& v : g.getVertexSet()){
+    for (auto& v : graph.getVertexSet()){
         if (v->getInfo()[0] == 'R'){
-            g.addEdge(superSource.getCode(), v->getInfo(), INF);
+            graph.addEdge(superSource.getCode(), v->getInfo(), INF);
         }
         if (v->getInfo()[0] == 'C'){
-            g.addEdge(v->getInfo(),superTarget.getCode(), INF);
-            double delivery = 0;
-            for (auto edge : v->getIncoming()){
-                delivery += edge->getFlow();
-            }
-            deliveries[v->getInfo()] = delivery;
+            graph.addEdge(v->getInfo(),superTarget.getCode(), INF);
         }
     }
 
@@ -556,16 +523,16 @@ void System::removePipe(Graph<string> g, const string& pa, const string& pb){
     }
 
 
-    for (auto& v : g.getVertexSet()){
+    for (auto& v : graph.getVertexSet()){
         for (auto& e : v->getAdj()){
             e->setFlow(0);
         }
     }
 
-    edmondsKarp(g,superSource.getCode(),superTarget.getCode());
+    edmondsKarp(graph,superSource.getCode(),superTarget.getCode());
 
-    g.removeVertex(superSource.getCode());
-    g.removeVertex(superTarget.getCode());
+    graph.removeVertex(superSource.getCode());
+    graph.removeVertex(superTarget.getCode());
 
 
     cout << "On removal of the following Pipe: " << pa << " -> " << pb;
@@ -576,13 +543,13 @@ void System::removePipe(Graph<string> g, const string& pa, const string& pb){
     cout << "| City               | Before Removal | After Removal | Difference   |" << endl;
     cout << "+--------------------+---------------+---------------+---------------+" << endl;
 
-    for (auto v : g.getVertexSet()) {
+    for (auto v : graph.getVertexSet()) {
         if (v->getInfo()[0] == 'C') {
             double delafter = 0;
             for (auto edge : v->getIncoming()) {
                 delafter += edge->getFlow();
             }
-            double before = deliveries[v->getInfo()];
+            double before = codeToCity.at(v->getInfo()).getMaxFlow();
             double difference = delafter - before;
             cout << "| " << left << setw(19) << v->getInfo() << "| " << setw(13) << before << "  | " << setw(13) << delafter << " | " << setw(13) << difference << "|" << endl;
         }
@@ -590,7 +557,7 @@ void System::removePipe(Graph<string> g, const string& pa, const string& pb){
     cout << "+--------------------+---------------+---------------+---------------+" << endl;
 
 
-    for (auto v : g.getVertexSet()){
+    for (auto v : graph.getVertexSet()){
         for (auto e : v->getAdj()){
             auto s = e->getOrig()->getInfo();
             auto t = e->getDest()->getInfo();

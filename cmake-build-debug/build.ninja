@@ -67,6 +67,12 @@ build CMakeFiles/untitled17.dir/data_structures/UFDS.cpp.obj: CXX_COMPILER__unti
   OBJECT_DIR = CMakeFiles\untitled17.dir
   OBJECT_FILE_DIR = CMakeFiles\untitled17.dir\data_structures
 
+build CMakeFiles/untitled17.dir/src/App.cpp.obj: CXX_COMPILER__untitled17_unscanned_Debug C$:/Users/Rafa/CLionProjects/DA2324_PRJ1_G15_4/src/App.cpp || cmake_object_order_depends_target_untitled17
+  DEP_FILE = CMakeFiles\untitled17.dir\src\App.cpp.obj.d
+  FLAGS = -g -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles\untitled17.dir
+  OBJECT_FILE_DIR = CMakeFiles\untitled17.dir\src
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target untitled17
@@ -75,7 +81,7 @@ build CMakeFiles/untitled17.dir/data_structures/UFDS.cpp.obj: CXX_COMPILER__unti
 #############################################
 # Link the executable untitled17.exe
 
-build untitled17.exe: CXX_EXECUTABLE_LINKER__untitled17_Debug CMakeFiles/untitled17.dir/main.cpp.obj CMakeFiles/untitled17.dir/src/System.cpp.obj CMakeFiles/untitled17.dir/data_structures/UFDS.cpp.obj
+build untitled17.exe: CXX_EXECUTABLE_LINKER__untitled17_Debug CMakeFiles/untitled17.dir/main.cpp.obj CMakeFiles/untitled17.dir/src/System.cpp.obj CMakeFiles/untitled17.dir/data_structures/UFDS.cpp.obj CMakeFiles/untitled17.dir/src/App.cpp.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\untitled17.dir

@@ -81,6 +81,10 @@ public:
     void runEdmondsKarp();
 
     void fillPipeMap();
+
+    void initialize();
+
+    void removePipe(const string &pa, const string &pb);
 };
 
 

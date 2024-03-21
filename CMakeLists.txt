@@ -14,4 +14,6 @@ add_executable(untitled17 main.cpp
         src/Station.h
         src/City.h
         src/Pipe.h
+        src/App.h
+        src/App.cpp
 )
