@@ -12,7 +12,7 @@ int main() {
     cout << endl << endl;
 
     system.fillPipeMap();
-    system.removePS("PS_35");
+    system.removePS("PS_45");
 }
 
 

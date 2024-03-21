@@ -496,6 +496,7 @@ void System::removePS(const string& ps){
         }
     }
 
+
     graph.removeVertex(ps);
 
     for (auto v : graph.getVertexSet()){
