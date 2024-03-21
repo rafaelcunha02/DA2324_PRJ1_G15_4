@@ -9,7 +9,7 @@ System::System() = default;
 
 void System::readAndParseNodes() {
 
-    ifstream file("../data/Reservoirs_Madeira.csv");
+    ifstream file("../data/Reservoir.csv");
     string line;
 
     getline(file, line);
@@ -43,7 +43,7 @@ void System::readAndParseNodes() {
 
 
 
-    ifstream file2("../data/Cities_Madeira.csv");
+    ifstream file2("../data/Cities.csv");
     string line2;
 
     getline(file2, line2);
@@ -75,7 +75,7 @@ void System::readAndParseNodes() {
     int count = 0;
 
 
-    ifstream file3("../data/Stations_Madeira.csv");
+    ifstream file3("../data/Stations.csv");
     string line3;
 
     getline(file3, line3);
@@ -104,7 +104,7 @@ void System::readAndParseNodes() {
 void System::readAndParseEdges() {
 
 
-    ifstream file("../data/Pipes_Madeira.csv");
+    ifstream file("../data/Pipes.csv");
     string line;
 
     getline(file, line);
@@ -402,6 +402,7 @@ void System::enoughWater(){
     ifstream file("../data/max_flow_output.csv");
     string line;
 
+    int count  = 0;
     getline(file, line);
     while (getline(file, line)){
         stringstream ss(line);
@@ -415,8 +416,8 @@ void System::enoughWater(){
         if (maxflow < codeToCity.at(code).getDemand()){
             cout << "City: " << codeToCity.at(code).getCode() << "   deficit: " << codeToCity.at(code).getDemand() - maxflow << endl;
         }
-
     }
+
 }
 
 
@@ -473,15 +474,8 @@ void System::removePS(const string& ps){
 
     auto map2 = codeToReservoir;
 
-    vector<vector<string>> infoEdges;
-
-    for (auto edge : graph.findVertex(ps)->getAdj()){
-
-    }
-
     Reservoir superSource("superS", "", 0, "r_Super", INF);
     City superTarget("superT",0,"c_Super",INF,INF);
-
 
     graph.addVertex(superSource.getCode());
     graph.addVertex(superTarget.getCode());
@@ -493,7 +487,6 @@ void System::removePS(const string& ps){
             graph.addEdge(superSource.getCode(), v->getInfo(), INF);
         }
         if (v->getInfo()[0] == 'C'){
-
             graph.addEdge(v->getInfo(),superTarget.getCode(), INF);
             double delivery = 0;
             for (auto edge : v->getIncoming()){
@@ -505,11 +498,18 @@ void System::removePS(const string& ps){
 
     graph.removeVertex(ps);
 
+    for (auto v : graph.getVertexSet()){
+        for (auto edge : v->getAdj()){
+            edge->setFlow(0);
+        }
+    }
+
     edmondsKarp(graph,superSource.getCode(),superTarget.getCode());
 
     graph.removeVertex(superTarget.getCode());
     graph.removeVertex(superSource.getCode());
 
+    cout << "On removal of the following pumping station: " << ps;
     cout << endl;
     cout << "+--------------------+---------------+---------------+---------------+" << endl;
     cout << "| City               | Before Removal | After Removal | Difference   |" << endl;
@@ -530,8 +530,17 @@ void System::removePS(const string& ps){
 
     graph.addVertex(ps);
 
+    for (auto v : graph.getVertexSet()){
+        for (auto edge : v->getAdj()){
+            string source = edge->getOrig()->getInfo();
+            string target = edge->getDest()->getInfo();
+            edge->setFlow(codesToPipe.at(source+target).getFlow());
+        }
+    }
+
     for (const auto& par : codesToPipe){
         if (codesToPipe.at(par.first).getSource() == ps){
+            cout << "entrou" << endl;
             Pipe edge = codesToPipe.at(par.first);
             graph.addEdge(ps, edge.getTarget(), edge.getCapacity());
             for (auto e : graph.findVertex(ps)->getAdj()){
@@ -542,6 +551,8 @@ void System::removePS(const string& ps){
         }
 
         else if (codesToPipe.at(par.first).getTarget() == ps){
+            cout << "entrou no else" << endl;
+
             Pipe edge = codesToPipe.at(par.first);
             graph.addEdge(edge.getSource(), ps, edge.getCapacity());
             for (auto e : graph.findVertex(ps)->getIncoming()){
@@ -553,12 +564,13 @@ void System::removePS(const string& ps){
     }
 
     codeToReservoir = map2;
-
-
 }
 
 
 void System::removePipe(Graph<string> g, const string& pa, const string& pb){
+
+
+    auto map2 = codeToReservoir;
 
     Reservoir superSource("superS", "", 0, "r_Super", INF);
     City superTarget("superT",0,"c_Super",INF,INF);
@@ -573,7 +585,6 @@ void System::removePipe(Graph<string> g, const string& pa, const string& pb){
             g.addEdge(superSource.getCode(), v->getInfo(), INF);
         }
         if (v->getInfo()[0] == 'C'){
-
             g.addEdge(v->getInfo(),superTarget.getCode(), INF);
             double delivery = 0;
             for (auto edge : v->getIncoming()){
@@ -617,6 +628,7 @@ void System::removePipe(Graph<string> g, const string& pa, const string& pb){
     string papb = pa+pb;
     g.addEdge(pa, pb, codesToPipe.at(papb).getCapacity());
 
+
     for (auto v : g.getVertexSet()){
         for (auto e : v->getAdj()){
             auto s = e->getOrig()->getInfo();
@@ -624,6 +636,8 @@ void System::removePipe(Graph<string> g, const string& pa, const string& pb){
             e->setFlow(codesToPipe.at(s+t).getFlow());
         }
     }
+
+    codeToReservoir = map2;
 
 }
 
