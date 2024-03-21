@@ -12,7 +12,14 @@ int main() {
     cout << endl << endl;
 
     system.fillPipeMap();
-    system.removePS("PS_45");
+    system.removePipe(graph,"PS_44","PS_45");
+    system.removePipe(graph,"PS_44","PS_45");
+    system.removePipe(graph,"PS_44","PS_45");
+    system.removePipe(graph,"PS_44","PS_45");
+    system.removePipe(graph,"PS_44","PS_45");
+
+
+
 }
 
 

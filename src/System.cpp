@@ -497,7 +497,18 @@ void System::removePS(const string& ps){
     }
 
 
-    graph.removeVertex(ps);
+    for (auto v : graph.getVertexSet()){
+        if (v->getInfo() == ps){
+            for (auto e : v->getAdj()){
+                e->setWeight(0);
+            }
+            for (auto e : v->getIncoming()){
+                e->setWeight(0);
+            }
+            break;
+        }
+    }
+
 
     for (auto v : graph.getVertexSet()){
         for (auto edge : v->getAdj()){
@@ -529,37 +540,18 @@ void System::removePS(const string& ps){
     }
     cout << "+--------------------+---------------+---------------+---------------+" << endl;
 
-    graph.addVertex(ps);
 
     for (auto v : graph.getVertexSet()){
         for (auto edge : v->getAdj()){
             string source = edge->getOrig()->getInfo();
             string target = edge->getDest()->getInfo();
             edge->setFlow(codesToPipe.at(source+target).getFlow());
-        }
-    }
-
-    for (const auto& par : codesToPipe){
-        if (codesToPipe.at(par.first).getSource() == ps){
-            cout << "entrou" << endl;
-            Pipe edge = codesToPipe.at(par.first);
-            graph.addEdge(ps, edge.getTarget(), edge.getCapacity());
-            for (auto e : graph.findVertex(ps)->getAdj()){
-                if (e->getDest()->getInfo() == edge.getTarget()){
-                    e->setFlow(edge.getFlow());
-                }
+            if (source == ps){
+                edge->setWeight(codesToPipe.at(source+target).getCapacity());
+                continue;
             }
-        }
-
-        else if (codesToPipe.at(par.first).getTarget() == ps){
-            cout << "entrou no else" << endl;
-
-            Pipe edge = codesToPipe.at(par.first);
-            graph.addEdge(edge.getSource(), ps, edge.getCapacity());
-            for (auto e : graph.findVertex(ps)->getIncoming()){
-                if (e->getOrig()->getInfo() == edge.getSource()){
-                    e->setFlow(edge.getFlow());
-                }
+            if (target == ps){
+                edge->setWeight(codesToPipe.at(target+source).getCapacity());
             }
         }
     }
@@ -569,7 +561,6 @@ void System::removePS(const string& ps){
 
 
 void System::removePipe(Graph<string> g, const string& pa, const string& pb){
-
 
     auto map2 = codeToReservoir;
 
@@ -595,7 +586,18 @@ void System::removePipe(Graph<string> g, const string& pa, const string& pb){
         }
     }
 
-    g.removeEdge(pa, pb);
+
+    for (auto v : graph.getVertexSet()){
+        if (v->getInfo() == pa){
+            for (auto edge : v->getAdj()){
+                if (edge->getDest()->getInfo() == pb){
+                    edge->setWeight(0);
+                }
+            }
+            break;
+        }
+    }
+
 
     for (auto& v : g.getVertexSet()){
         for (auto& e : v->getAdj()){
@@ -607,6 +609,10 @@ void System::removePipe(Graph<string> g, const string& pa, const string& pb){
 
     g.removeVertex(superSource.getCode());
     g.removeVertex(superTarget.getCode());
+
+
+    cout << "On removal of the following Pipe: " << pa << " -> " << pb;
+
 
     cout << endl;
     cout << "+--------------------+---------------+---------------+---------------+" << endl;
@@ -626,15 +632,15 @@ void System::removePipe(Graph<string> g, const string& pa, const string& pb){
     }
     cout << "+--------------------+---------------+---------------+---------------+" << endl;
 
-    string papb = pa+pb;
-    g.addEdge(pa, pb, codesToPipe.at(papb).getCapacity());
-
 
     for (auto v : g.getVertexSet()){
         for (auto e : v->getAdj()){
             auto s = e->getOrig()->getInfo();
             auto t = e->getDest()->getInfo();
             e->setFlow(codesToPipe.at(s+t).getFlow());
+            if (s+t == pa+pb){
+                e->setWeight(codesToPipe.at(s+t).getCapacity());
+            }
         }
     }
 

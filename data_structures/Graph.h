@@ -341,7 +341,7 @@ void Edge<T>::setFlow(double flow) {
 
 template <class T>
 void Edge<T>::setWeight(double weight) {
-    this->weight = flow;
+    this->weight = weight;
 }
 
 /********************** Graph  ****************************/
