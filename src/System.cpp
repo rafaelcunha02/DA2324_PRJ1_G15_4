@@ -315,6 +315,7 @@ void System::fillPipeMap() {
             for (auto e : v->getIncoming()){
                 count += e->getFlow();
             }
+            codeToCity.at(v->getInfo()).setMaxFlow(count);
             file2 << codeToCity.at(v->getInfo()).getCode() << "," << count << std::endl;
         }
     }
@@ -323,65 +324,9 @@ void System::fillPipeMap() {
 
 void System::maxFlowSingleCity(const string &city) {
 
+    auto maxflow = codeToCity.at(city).getMaxFlow();
 
-    Graph<string> graph2 = graph;
-    Reservoir superSource("superS", "", 0, "r_Super", INF);
-    City superTarget("superT",0,"c_Super",INF,INF);
-
-    auto map2 = codeToReservoir;
-
-
-    graph.addVertex(superSource.getCode());
-    graph.addVertex(superTarget.getCode());
-
-    for (auto& v : graph.getVertexSet()){
-        for (auto& edge : v->getAdj()){
-            edge->setFlow(0);
-        }
-    }
-
-    for (auto& v : graph.getVertexSet()){
-        if (v->getInfo()[0] == 'R'){
-            graph.addEdge(superSource.getCode(), v->getInfo(), INF);
-        }
-        if (v->getInfo()[0] == 'C'){
-            graph.addEdge(v->getInfo(),superTarget.getCode(), INF);
-        }
-    }
-
-
-
-    edmondsKarp(graph,superSource.getCode(),superTarget.getCode());
-
-   /* auto soma = 0;
-    for (auto v : graph.getVertexSet()){
-        if (v->getInfo()[0] == 'R'){
-            soma = 0;
-            for (auto e : v->getAdj()){
-                soma += e->getFlow();
-            }
-            cout << v->getInfo() << " " << soma << endl;
-        }
-    }*/
-
-    graph.removeVertex(superSource.getCode());
-    graph.removeVertex(superTarget.getCode());
-
-
-
-
-    double count = 0;
-    for (auto& Edge : graph.findVertex(city)->getIncoming()){
-        count += Edge->getFlow();
-
-    }
-
-    graph = graph2;
-    codeToReservoir = map2;
-
-    std::ofstream file("../data/max_flow_output.csv", std::ios::app);
-        file << codeToCity.at(city).getCode() << "," << count << std::endl;
-    cout << "| " << setw(12) << std::left << codeToCity.at(city).getCode() << " | " << setw(12) << count << " |" << endl;
+    cout << "| " << setw(12) << std::left << codeToCity.at(city).getCode() << " | " << setw(12) << maxflow << " |" << endl;
     cout << "+--------------+--------------+" << endl;
 }
 

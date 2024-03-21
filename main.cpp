@@ -12,11 +12,9 @@ int main() {
     cout << endl << endl;
 
     system.fillPipeMap();
-    system.removePipe(graph,"PS_44","PS_45");
-    system.removePipe(graph,"PS_44","PS_45");
-    system.removePipe(graph,"PS_44","PS_45");
-    system.removePipe(graph,"PS_44","PS_45");
-    system.removePipe(graph,"PS_44","PS_45");
+
+
+    system.maxFlowEachCity();
 
 
 
