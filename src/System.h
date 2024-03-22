@@ -73,6 +73,14 @@ public:
     void removePipe(const string &pa, const string &pb);
 
     void maxFlowSystem();
+
+    void removeReservoirVector(const vector<string>& vector);
+
+    void permaremoveReservoir(const string& r);
+
+    void permaremovePS(const string &ps);
+
+    void removePSVector(const vector<string> &vetor);
 };
 
 

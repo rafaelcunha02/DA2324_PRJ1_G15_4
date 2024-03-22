@@ -367,15 +367,29 @@ void System::maxFlowSystem(){
     cout << "The maximum flow for this network is " << tot << "m^3/sec";
 }
 
-void System::enoughWater(){
-    for (const auto& par : codeToCity){
-        auto maxflow = par.second.getMaxFlow();
+void System::enoughWater() {
+    cout << "+--------------+-----------------------+" << endl;
+    cout << "| City Code    | Water Deficit         |" << endl;
+    cout << "+--------------+-----------------------+" << endl;
 
-        if (maxflow < par.second.getDemand()){
-            cout << "City: " << par.second.getCode() << "   deficit: " << par.second.getDemand() - maxflow << endl;
+    bool enough = true;
+    for (const auto& par : codeToCity) {
+        auto maxflow = par.second.getMaxFlow();
+        if (maxflow < par.second.getDemand()) {
+            enough = false;
+            cout << "| " << setw(12) << left << par.second.getCode() << " | Deficit: " << setw(12) << left << (par.second.getDemand() - maxflow) << " |" << endl;
         }
     }
+
+    cout << "+--------------+-----------------------+" << endl;
+
+    if (enough) {
+        cout << endl << "This network can successfully meet the water needs of every delivery site." << endl;
+    } else {
+        cout << endl << "This network cannot meet the water needs of every delivery site." << endl;
+    }
 }
+
 
 
 void System::averageFlowPipes(){
@@ -424,6 +438,143 @@ void System::averageFlowPipes(){
 
     cout << "Variance: " << variance;
 
+}
+
+
+void System::removeReservoir(const string& r){
+
+    auto map2 = codeToReservoir;
+
+    auto delivery = codeToReservoir.at(r).getDelivery();
+    codeToReservoir.at(r).setDelivery(0);
+
+    Reservoir superSource("superS", "", 0, "r_Super", INF);
+    City superTarget("superT",0,"c_Super",INF,INF);
+
+    graph.addVertex(superSource.getCode());
+    graph.addVertex(superTarget.getCode());
+
+    for (auto& v : graph.getVertexSet()){
+        if (v->getInfo()[0] == 'R'){
+            graph.addEdge(superSource.getCode(), v->getInfo(), INF);
+        }
+        if (v->getInfo()[0] == 'C'){
+            graph.addEdge(v->getInfo(),superTarget.getCode(), INF);
+        }
+    }
+
+
+    for (auto v : graph.getVertexSet()){
+        for (auto edge : v->getAdj()){
+            edge->setFlow(0);
+        }
+    }
+
+    edmondsKarp(graph,superSource.getCode(),superTarget.getCode());
+
+    graph.removeVertex(superTarget.getCode());
+    graph.removeVertex(superSource.getCode());
+
+    cout << "On removal of the following Reservoir: " << r;
+    cout << endl;
+    cout << "+--------------------+---------------+---------------+---------------+" << endl;
+    cout << "| City               | Before Removal | After Removal | Difference   |" << endl;
+    cout << "+--------------------+---------------+---------------+---------------+" << endl;
+
+    for (auto v : graph.getVertexSet()) {
+        if (v->getInfo()[0] == 'C') {
+            double delafter = 0;
+            for (auto edge : v->getIncoming()) {
+                delafter += edge->getFlow();
+            }
+            double before = codeToCity.at(v->getInfo()).getMaxFlow();
+            double difference = delafter - before;
+            cout << "| " << left << setw(19) << v->getInfo() << "| " << setw(13) << before << "  | " << setw(13) << delafter << " | " << setw(13) << difference << "|" << endl;
+        }
+    }
+    cout << "+--------------------+---------------+---------------+---------------+" << endl;
+
+    codeToReservoir = map2;
+}
+
+
+void System::permaremoveReservoir(const string& r){
+
+    codeToReservoir.at(r).setDelivery(0);
+
+    for (auto v : graph.getVertexSet()){
+        for (auto edge : v->getAdj()){
+            edge->setFlow(0);
+        }
+    }
+
+    edmondsKarp(graph,"r_Super","c_Super");
+
+    cout << "On removal of the following Reservoir: " << r;
+    cout << endl;
+    cout << "+--------------------+---------------+---------------+---------------+" << endl;
+    cout << "| City               | Before Removal | After Removal | Difference   |" << endl;
+    cout << "+--------------------+---------------+---------------+---------------+" << endl;
+
+    for (auto v : graph.getVertexSet()) {
+        if (v->getInfo()[0] == 'C') {
+            double delafter = 0;
+            for (auto edge : v->getIncoming()) {
+                delafter += edge->getFlow();
+            }
+            double before = codeToCity.at(v->getInfo()).getMaxFlow();
+            codeToCity.at(v->getInfo()).setMaxFlow(delafter);
+            double difference = delafter - before;
+            cout << "| " << left << setw(19) << v->getInfo() << "| " << setw(13) << before << "  | " << setw(13) << delafter << " | " << setw(13) << difference << "|" << endl;
+        }
+    }
+    cout << "+--------------------+---------------+---------------+---------------+" << endl;
+
+}
+
+void System::removeReservoirVector(const vector<string>& vetor) {
+
+    auto map2 = codeToReservoir;
+    auto map3 = codeToCity;
+
+    vector<string> removed;
+
+    Reservoir superSource("superS", "", 0, "r_Super", INF);
+    City superTarget("superT",0,"c_Super",INF,INF);
+
+    graph.addVertex(superSource.getCode());
+    graph.addVertex(superTarget.getCode());
+
+    for (auto& v : graph.getVertexSet()){
+        if (v->getInfo()[0] == 'R'){
+            graph.addEdge(superSource.getCode(), v->getInfo(), INF);
+        }
+        if (v->getInfo()[0] == 'C'){
+            graph.addEdge(v->getInfo(),superTarget.getCode(), INF);
+        }
+    }
+
+    for (const auto& r : vetor){
+        if (codeToReservoir.find(r) != codeToReservoir.end()){
+            permaremoveReservoir(r);
+            codeToReservoir = map2;
+            removed.push_back(r);
+            for (const auto& reservatorio : removed){
+                codeToReservoir.at(reservatorio).setDelivery(0);
+            }
+        }
+        else{
+            cout << "The chosen reservoir, '" << r << "'does not exist" << endl;
+            cout << "Skipping..." << endl << endl;
+        }
+
+    }
+
+    graph.removeVertex(superTarget.getCode());
+    graph.removeVertex(superSource.getCode());
+
+    codeToCity = map3;
+    codeToReservoir = map2;
 }
 
 
@@ -509,6 +660,121 @@ void System::removePS(const string& ps){
     }
 
     codeToReservoir = map2;
+}
+
+
+void System::permaremovePS(const string& ps){
+
+    auto map2 = codeToReservoir;
+
+    unordered_map<string,double> deliveries;
+
+    //remover o peso da edges
+    for (auto v : graph.getVertexSet()){
+        if (v->getInfo() == ps){
+            for (auto e : v->getAdj()){
+                e->setWeight(0);
+            }
+            for (auto e : v->getIncoming()){
+                e->setWeight(0);
+            }
+            break;
+        }
+    }
+
+    //resetar o flow
+    for (auto v : graph.getVertexSet()){
+        for (auto edge : v->getAdj()){
+            edge->setFlow(0);
+        }
+    }
+
+    //Já podemos mandar o edmonds
+    edmondsKarp(graph,"r_Super","c_Super");
+
+    cout << "On removal of the following pumping station: " << ps;
+    cout << endl;
+    cout << "+--------------------+---------------+---------------+---------------+" << endl;
+    cout << "| City               | Before Removal | After Removal | Difference   |" << endl;
+    cout << "+--------------------+---------------+---------------+---------------+" << endl;
+
+    for (auto v : graph.getVertexSet()) {
+        if (v->getInfo()[0] == 'C') {
+            double delafter = 0;
+            for (auto edge : v->getIncoming()) {
+                delafter += edge->getFlow();
+            }
+            double before = codeToCity.at(v->getInfo()).getMaxFlow();
+            codeToCity.at(v->getInfo()).setMaxFlow(delafter); //atualizar maxflow
+            double difference = delafter - before;
+            cout << "| " << left << setw(19) << v->getInfo() << "| " << setw(13) << before << "  | " << setw(13) << delafter << " | " << setw(13) << difference << "|" << endl;
+        }
+    }
+    cout << "+--------------------+---------------+---------------+---------------+" << endl;
+
+}
+
+void System::removePSVector(const vector<string>& vetor) {
+
+    auto map2 = codeToReservoir; //guardar a informação
+    auto map3 = codeToCity;
+
+    vector<string> removed; //vetor para dar track ao que ja foi removido
+
+    Reservoir superSource("superS", "", 0, "r_Super", INF);
+    City superTarget("superT",0,"c_Super",INF,INF);
+
+    graph.addVertex(superSource.getCode());
+    graph.addVertex(superTarget.getCode());
+
+    for (auto& v : graph.getVertexSet()){
+        if (v->getInfo()[0] == 'R'){
+            graph.addEdge(superSource.getCode(), v->getInfo(), INF);
+        }
+        if (v->getInfo()[0] == 'C'){
+            graph.addEdge(v->getInfo(),superTarget.getCode(), INF);
+        }
+    }
+
+    for (const auto& ps : vetor){
+        if (codeToStation.find(ps) != codeToStation.end()){
+            permaremovePS(ps); //remover
+            codeToReservoir = map2; //resetar o codeToReservoir para nao ficar tudo a 0s na maxdelivery
+            removed.push_back(ps); //adicionar ao vetor de dar track
+
+            //remover os que já estao no vetor para poder começar a proxima iteração
+            for (auto v : graph.getVertexSet()){
+                if (v->getInfo() == ps){
+                    for (auto edge : v->getAdj()){
+                        edge->setWeight(0);
+                    }
+                }
+            }
+        }
+        else{
+            cout << "The chosen Pumping Station, '" << ps << "', does not exist" << endl;
+            cout << "Skipping..." << endl << endl;
+        }
+
+    }
+
+    graph.removeVertex(superTarget.getCode());
+    graph.removeVertex(superSource.getCode());
+
+
+    //resetar a informação
+
+    codeToCity = map3;
+    codeToReservoir = map2;
+
+    for (auto v : graph.getVertexSet()){
+        for (auto edge : v->getAdj()){
+            string source = edge->getOrig()->getInfo();
+            string target = edge->getDest()->getInfo();
+            edge->setFlow(codesToPipe.at(source+target).getFlow());
+            edge->setWeight(codesToPipe.at(source+target).getCapacity());
+        }
+    }
 }
 
 
