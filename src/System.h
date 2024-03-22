@@ -64,27 +64,15 @@ public:
 
     void removeReservoir(const string& r);
 
-    void removeFlowAlongPath(Vertex<string> *s, Vertex<string> *t, double f);
-
-    void removeFlowAlongPath(Vertex<string> *s, double f);
-
-    void updatePath(const string &u, const string &r);
-
     void removePS(const string& ps);
 
-    void removePipe(const string &pipe);
 
-    void removePipe(Graph<string> g, const string &pa, const string &pb);
-
-    void runEdmondsKarp(const string &city);
-
-    void runEdmondsKarp();
-
-    void fillPipeMap();
 
     void initialize();
 
     void removePipe(const string &pa, const string &pb);
+
+    void maxFlowSystem();
 };
 
 

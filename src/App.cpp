@@ -5,6 +5,8 @@
 
 void basicServiceMetrics(const System& system);
 
+void MaxFlowMenu(const System &system);
+
 int mainMenu(){
     cout << "Loading...";
 
@@ -60,7 +62,7 @@ void basicServiceMetrics(const System& system) {
         cout << "      Service Metrics Menu      \n";
         cout << "----------------------------------\n";
         cout << "Choose an option:\n";
-        cout << "1. Calculate the Maximum water flow \n";
+        cout << "1. Check the Maximum water Flow \n";
         cout << "2. Check Water Supply Sufficiency and Water deficits\n";
         cout << "3. Balance the Load across the Network \n";
         cout << "4. Count countries served by a specific airport/city\n";
@@ -76,7 +78,7 @@ void basicServiceMetrics(const System& system) {
 
         switch (choice[0]) {
             case '1':
-                //displayGlobalNumbers();
+                 MaxFlowMenu(system);
                 break;
             case '2':
                 //displayFlightsFromAirport(graph);
@@ -94,6 +96,57 @@ void basicServiceMetrics(const System& system) {
                 cout << "Invalid choice. Please try again.\n";
         }
     }
+
+}
+
+
+void MaxFlowMenu(const System &system) {
+
+    System sistema = system;
+
+    string choice;
+    bool back = false;
+
+    while (!back) {
+        cout << "\n----------------------------------\n";
+        cout << "      Service Metrics Menu      \n";
+        cout << "----------------------------------\n";
+        cout << "Choose an option:\n";
+        cout << "1. Calculate the Maximum Flow for a single city \n";
+        cout << "2. Calculate the Maximum Flow for every city\n";
+        cout << "3. Calculate the Maximum Flow of the whole Network \n";
+        cout << "b. Go back\n";
+        cout << "----------------------------------\n";
+        cout << "Your choice: " << endl;
+
+        cin >> choice;
+
+        if (choice.length() != 1){
+            choice = "h";
+        }
+
+        string choice2;
+
+        switch (choice[0]) {
+            case '1':
+                cout << "Enter the desired City's code:" << endl;
+                cin >> choice2;
+                sistema.maxFlowSingleCity(choice2);
+                break;
+            case '2':
+                sistema.maxFlowEachCity();
+                break;
+            case '3':
+                sistema.maxFlowSystem();
+                break;
+            case 'b':
+                back = true;
+                break;
+            default:
+                cout << "Invalid choice. Please try again.\n";
+        }
+    }
+
 
 }
 

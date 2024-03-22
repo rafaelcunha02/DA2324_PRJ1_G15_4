@@ -322,10 +322,22 @@ void System::initialize() {
 
 void System::maxFlowSingleCity(const string &city) {
 
-    double maxflow = codeToCity.at(city).getMaxFlow();
 
-    cout << "| " << setw(12) << std::left << codeToCity.at(city).getCode() << " | " << setw(12) << maxflow << " |" << endl;
     cout << "+--------------+--------------+" << endl;
+    cout << "| City Code    | Max Flow     |" << endl;
+    cout << "+--------------+--------------+" << endl;
+
+    if (codeToCity.find(city) != codeToCity.end()){
+        double maxflow = codeToCity.at(city).getMaxFlow();
+
+
+        cout << "| " << setw(12) << std::left << codeToCity.at(city).getCode() << " | " << setw(12) << maxflow << " |" << endl;
+        cout << "+--------------+--------------+" << endl;
+    }
+    else{
+        cout << "Invalid choice, please try again with an existing city code.";
+    }
+
 }
 
 
@@ -333,15 +345,26 @@ void System::maxFlowEachCity(){
     cout << "+--------------+--------------+" << endl;
     cout << "| City Code    | Max Flow     |" << endl;
     cout << "+--------------+--------------+" << endl;
-    for (auto& v : graph.getVertexSet()){
-        for (auto& edge : v->getAdj()){
-            edge->setFlow(0);
-        }
-    }
+
+
     for (const auto& par : codeToCity){
-        maxFlowSingleCity(par.first);
+        auto city = par.first;
+        double maxflow = codeToCity.at(city).getMaxFlow();
+
+
+        cout << "| " << setw(12) << std::left << codeToCity.at(city).getCode() << " | " << setw(12) << maxflow << " |" << endl;
+        cout << "+--------------+--------------+" << endl;
     }
 
+}
+
+void System::maxFlowSystem(){
+    double tot = 0;
+    for (const auto& par : codeToCity){
+        tot += par.second.getMaxFlow();
+    }
+
+    cout << "The maximum flow for this network is " << tot << "m^3/sec";
 }
 
 void System::enoughWater(){
