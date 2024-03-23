@@ -14,7 +14,7 @@ int main() {
     system.readAndParseEdges();
     system.initialize();
 
-    for (auto v : system.getGraph().getVertexSet()){
+    /*for (auto v : system.getGraph().getVertexSet()){
         if (v->getInfo()[0] == 'P'){
             vetor.push_back(v->getInfo());
         }
@@ -25,10 +25,10 @@ int main() {
     system.maxFlowSystem();
 
 
-    system.removePSVector(vetor);
+    system.removePSVector(vetor);*/
 
 
-    //App::run();
+    App::run();
 
 
 }

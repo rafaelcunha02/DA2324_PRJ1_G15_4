@@ -127,19 +127,46 @@ void PipesMenu(const System &system) {
 
         cin >> choice;
 
+        vector<string> pipelineIDs;
+        string code;
+        stringstream ss;
+        string input;
+        string input2;
+
         if (choice.length() != 1){
             choice = "h";
         }
 
         switch (choice[0]) {
             case '1':
-                //sistema.removePipe()
+                cout << "Enter the desired source's Code:" << endl;
+                cin >> input;
+                cout << "Enter the desired target's Code:" << endl;
+                cin >> input2;
+                sistema.removePipe(input, input2);
+
                 break;
             case '2':
-                StationsMenu(system);
+                cout << "Enter comma-separated values for SourceDestination Codes in the desired order of removal: " << endl;
+                cin >> input;
+
+                ss.str(input);
+
+                while (getline(ss, code, ',')) {
+                    pipelineIDs.push_back(code);
+                }
+
+                sistema.removePipeVector(pipelineIDs);
+                pipelineIDs.clear();
                 break;
             case '3':
-                PipesMenu(system);
+                for (auto v : sistema.getGraph().getVertexSet()){
+                    for (auto edge : v->getAdj()){
+                        pipelineIDs.push_back(edge->getOrig()->getInfo()+edge->getDest()->getInfo());
+                    }
+                }
+                sistema.removePipeVector(pipelineIDs);
+                pipelineIDs.clear();
                 break;
             case 'b':
                 back = true;
@@ -175,15 +202,38 @@ void StationsMenu(const System &system) {
             choice = "h";
         }
 
+        vector<string> stationIDs;
+        string code;
+        stringstream ss;
+        string input;
+
         switch (choice[0]) {
             case '1':
-                //sistema.removeStation()
+                cout << "Enter  desired Station's Code: " << endl;
+                cin >> input;
+                sistema.removePS(input);
                 break;
             case '2':
-                StationsMenu(system);
+                cout << "Enter comma-separated values for Station Codes in the desired order of removal: " << endl;
+                cin >> input;
+
+                ss.str(input);
+
+                while (getline(ss, code, ',')) {
+                    stationIDs.push_back(code);
+                }
+
+                sistema.removePSVector(stationIDs);
+                stationIDs.clear();
                 break;
             case '3':
-                PipesMenu(system);
+                for (auto v : sistema.getGraph().getVertexSet()){
+                    if (v->getInfo()[0] == 'P'){
+                        stationIDs.push_back(v->getInfo());
+                    }
+                }
+                sistema.removePSVector(stationIDs);
+                stationIDs.clear();
                 break;
             case 'b':
                 back = true;
@@ -226,12 +276,12 @@ void ResevoirsMenu(const System &system) {
 
         switch (choice[0]) {
             case '1':
-                cout << "Enter comma-separated values for Reservoir IDs in the desired order: " << endl;
+                cout << "Enter  desired Reservoir's Code: " << endl;
                 cin >> input;
                 sistema.removeReservoir(input);
                 break;
             case '2':
-                cout << "Enter comma-separated values for Reservoir IDs in the desired order: " << endl;
+                cout << "Enter comma-separated values for Reservoir Codes in the desired order of removal: " << endl;
                 cin >> input;
 
                 ss.str(input);
@@ -245,9 +295,12 @@ void ResevoirsMenu(const System &system) {
                 break;
             case '3':
                     for (auto v : sistema.getGraph().getVertexSet()){
-                        reservoirIDs.push_back(v->getInfo());
+                        if (v->getInfo()[0] == 'R'){
+                            reservoirIDs.push_back(v->getInfo());
+                        }
                     }
                     sistema.removeReservoirVector(reservoirIDs);
+                    reservoirIDs.clear();
                 break;
             case 'b':
                 back = true;

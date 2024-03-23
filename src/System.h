@@ -81,6 +81,10 @@ public:
     void permaremovePS(const string &ps);
 
     void removePSVector(const vector<string> &vetor);
+
+    void permaremovePipe(const string &pa, const string &pb);
+
+    void removePipeVector(const vector<string> &vetor);
 };
 
 
