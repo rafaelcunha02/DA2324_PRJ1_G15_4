@@ -71,7 +71,7 @@ void reliabilityMenu(const System& system) {
 
     while (!back) {
         cout << "\n----------------------------------\n";
-        cout << "      Service Metrics Menu      \n";
+        cout << "      Reliability Menu      \n";
         cout << "----------------------------------\n";
         cout << "Choose an option:\n";
         cout << "1. Check the impact of one or multiple Reservoirs being out of commission \n";
@@ -366,7 +366,7 @@ void MaxFlowMenu(const System &system) {
 
     while (!back) {
         cout << "\n----------------------------------\n";
-        cout << "      Service Metrics Menu      \n";
+        cout << "      Maximum Flow Menu      \n";
         cout << "----------------------------------\n";
         cout << "Choose an option:\n";
         cout << "1. Calculate the Maximum Flow for a single city \n";

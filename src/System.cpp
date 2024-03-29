@@ -18,7 +18,7 @@ void System::readAndParseNodes() {
         string name, municipality, ident, code, del;
 
 
-        int delivery;
+        double delivery;
         int id;
 
         getline(ss, name, ',');
@@ -28,12 +28,13 @@ void System::readAndParseNodes() {
         getline(ss, del, ',');
 
 
-        delivery = stoi(del);
+        delivery = stod(del);
         id = stoi(ident);
 
 
         Reservoir WR(name, municipality, id, code, delivery);
         codeToReservoir.insert({code, WR});
+        cout << WR.getCode() << " " << WR.getDelivery() << endl;
 
         graph.addVertex(WR.getCode());
 
@@ -72,9 +73,6 @@ void System::readAndParseNodes() {
     //----------------------------------//
 
 
-    int count = 0;
-
-
     ifstream file3("../data/Stations.csv");
     string line3;
 
@@ -96,7 +94,11 @@ void System::readAndParseNodes() {
 
     }
 
-    count++;
+    for (auto v : graph.getVertexSet()){
+        if (v->getInfo()[0] == 'C'){
+            cout << codeToCity.at(v->getInfo()).getCode() << " " << codeToCity.at(v->getInfo()).getDemand() << endl;
+        }
+    }
 
 }
 
@@ -130,7 +132,6 @@ void System::readAndParseEdges() {
         else{
             graph.addBidirectionalEdge(source,dest, capacity);
         }
-
     }
 
 
@@ -139,30 +140,20 @@ void System::readAndParseEdges() {
 
 
 
+// Function to test the given vertex 'w' and visit it if conditions are met
 void System::testAndVisit(std::queue< Vertex<string>*> &q, Edge<string> *e, Vertex<string> *w, double residual) {
 // Check if the vertex 'w' is not visited and there is residual capacity
     if (! w->isVisited() && residual > 0) {
-        if (codeToReservoir.find(w->getInfo()) != codeToReservoir.end()){
-            if (codeToReservoir.at(w->getInfo()).getDelivery() > 0){
-                // Mark 'w' as visited, set the path through which it was reached, and enqueue it
-                w->setVisited(true);
-                w->setPath(e);
-                q.push(w);
-            }
-        }
-        else{
-            w->setVisited(true);
-            w->setPath(e);
-            q.push(w);
-        }
+// Mark 'w' as visited, set the path through which it was reached, and enqueue it
+        w->setVisited(true);
+        w->setPath(e);
+        q.push(w);
     }
 }
-
-
 // Function to find an augmenting path using Breadth-First Search
-bool System::findAugmentingPath(Graph<string> *g, Vertex<string> *s, Vertex<string> *t) {
+bool System::findAugmentingPath(Graph<string>& g, Vertex<string> *s, Vertex<string> *t) {
 // Mark all vertices as not visited
-    for(auto v : g->getVertexSet()) {
+    for(auto v : g.getVertexSet()) {
         v->setVisited(false);
     }
 // Mark the source vertex as visited and enqueue it
@@ -171,17 +162,15 @@ bool System::findAugmentingPath(Graph<string> *g, Vertex<string> *s, Vertex<stri
     q.push(s);
 // BFS to find an augmenting path
     while( ! q.empty() && ! t->isVisited()) {
-
-
         auto v = q.front();
         q.pop();
 // Process outgoing edges
         for(auto e: v->getAdj()) {
             testAndVisit(q, e, e->getDest(), e->getWeight() - e->getFlow());
         }
-
+// Process incoming edges
         for(auto e: v->getIncoming()) {
-            testAndVisit(q, e, e->getDest(), e->getWeight() - e->getFlow());
+            testAndVisit(q, e, e->getOrig(), e->getFlow());
         }
     }
 // Return true if a path to the target is found, false otherwise
@@ -191,26 +180,15 @@ bool System::findAugmentingPath(Graph<string> *g, Vertex<string> *s, Vertex<stri
 
 
 
+
 double System::findMinResidualAlongPath(Vertex<string> *s, Vertex<string> *t) {
     double f = INF;
 // Traverse the augmenting path to find the minimum residual capacity
-
     for (auto v = t; v != s; ) {
         auto e = v->getPath();
         if (e->getDest() == v) {
             f = std::min(f, e->getWeight() - e->getFlow());
             v = e->getOrig();
-
-            if (codeToReservoir.find(v->getInfo()) != codeToReservoir.end()){
-                auto res = codeToReservoir.at(v->getInfo());
-                double delivery = codeToReservoir.at(v->getInfo()).getDelivery();
-                f = std::min(f, delivery);
-                auto c = delivery - f;
-                codeToReservoir.at(v->getInfo()).setDelivery(delivery - f);
-                auto c2 = codeToReservoir.at(v->getInfo()).getDelivery();
-                int i = 0;
-            }
-
         }
         else {
             f = std::min(f, e->getFlow());
@@ -223,9 +201,7 @@ double System::findMinResidualAlongPath(Vertex<string> *s, Vertex<string> *t) {
 // Function to augment flow along the augmenting path with the given flow value
 void System::augmentFlowAlongPath(Vertex<string> *s, Vertex<string> *t, double f) {
 // Traverse the augmenting path and update the flow values accordingly
-
     for (auto v = t; v != s; ) {
-
         auto e = v->getPath();
         double flow = e->getFlow();
         if (e->getDest() == v) {
@@ -239,21 +215,27 @@ void System::augmentFlowAlongPath(Vertex<string> *s, Vertex<string> *t, double f
     }
 }
 
-void System::edmondsKarp(Graph<std::string>& g, const std::string &source, const std::string &target) {
-    // Find source and target vertices in the graph
+
+void System::edmondsKarp(Graph<string>& g, const string& source, const string& target) {
+// Find source and target vertices in the graph
     Vertex<string>* s = g.findVertex(source);
     Vertex<string>* t = g.findVertex(target);
 // Validate source and target vertices
     if (s == nullptr || t == nullptr || s == t)
         throw std::logic_error("Invalid source and/or target vertex");
-
+// Initialize flow on all edges to 0
+    for (auto v : g.getVertexSet()) {
+        for (auto e: v->getAdj()) {
+            e->setFlow(0);
+        }
+    }
 // While there is an augmenting path, augment the flow along the path
-    while( findAugmentingPath( &g, s, t) ) {
+    while( findAugmentingPath(g, s, t) ) {
         double f = findMinResidualAlongPath(s, t);
         augmentFlowAlongPath(s, t, f);
     }
-
 }
+
 
 
 void System::initialize() {
@@ -261,23 +243,15 @@ void System::initialize() {
     Reservoir superSource("superS", "", 0, "r_Super", INF);
     City superTarget("superT",0,"c_Super",INF,INF);
 
-    auto map2 = codeToReservoir;
-
     graph.addVertex(superSource.getCode());
     graph.addVertex(superTarget.getCode());
 
     for (auto& v : graph.getVertexSet()){
-        for (auto& edge : v->getAdj()){
-            edge->setFlow(0);
-        }
-    }
-
-    for (auto& v : graph.getVertexSet()){
         if (v->getInfo()[0] == 'R'){
-            graph.addEdge(superSource.getCode(), v->getInfo(), INF);
+            graph.addEdge(superSource.getCode(), v->getInfo(), codeToReservoir.at(v->getInfo()).getDelivery());
         }
         else if (v->getInfo()[0] == 'C'){
-            graph.addEdge(v->getInfo(),superTarget.getCode(), INF);
+            graph.addEdge(v->getInfo(),superTarget.getCode(), codeToCity.at(v->getInfo()).getDemand());
         }
     }
 
@@ -297,24 +271,16 @@ void System::initialize() {
         }
     }
 
-    codeToReservoir = map2;
-
-    graph.removeVertex(superSource.getCode());
-    graph.removeVertex(superTarget.getCode());
-
     std::ofstream file("../data/max_flow_output.csv", std::ios::trunc);
     std::ofstream file2("../data/max_flow_output.csv", std::ios::app);
     file2 << "CityCode" << "," << "Max Flow" << std::endl;
 
-    double count = 0;
     for (auto v : graph.getVertexSet()){
-        if (v->getInfo()[0] == 'C'){
-            count = 0;
+        if (v->getInfo()[0] == 'c'){
             for (auto e : v->getIncoming()){
-                count += e->getFlow();
+                codeToCity.at(e->getOrig()->getInfo()).setMaxFlow(e->getFlow());
+                file2 << e->getOrig()->getInfo() << "," << codeToCity.at(e->getOrig()->getInfo()).getMaxFlow() << std::endl;
             }
-            codeToCity.at(v->getInfo()).setMaxFlow(count);
-            file2 << codeToCity.at(v->getInfo()).getCode() << "," << count << std::endl;
         }
     }
 
@@ -449,37 +415,20 @@ void System::removeReservoir(const string& r){
         return;
     }
 
-    auto map2 = codeToReservoir;
-
-    auto delivery = codeToReservoir.at(r).getDelivery();
-    codeToReservoir.at(r).setDelivery(0);
-
-    Reservoir superSource("superS", "", 0, "r_Super", INF);
-    City superTarget("superT",0,"c_Super",INF,INF);
-
-    graph.addVertex(superSource.getCode());
-    graph.addVertex(superTarget.getCode());
-
-    for (auto& v : graph.getVertexSet()){
-        if (v->getInfo()[0] == 'R'){
-            graph.addEdge(superSource.getCode(), v->getInfo(), INF);
-        }
-        if (v->getInfo()[0] == 'C'){
-            graph.addEdge(v->getInfo(),superTarget.getCode(), INF);
-        }
-    }
 
 
+
+    double peso;
     for (auto v : graph.getVertexSet()){
-        for (auto edge : v->getAdj()){
-            edge->setFlow(0);
+        if (v->getInfo() == r){
+            for (auto edge : v->getIncoming()){
+                peso = edge->getWeight();
+                edge->setWeight(0);
+            }
         }
     }
 
-    edmondsKarp(graph,superSource.getCode(),superTarget.getCode());
-
-    graph.removeVertex(superTarget.getCode());
-    graph.removeVertex(superSource.getCode());
+    edmondsKarp(graph,"r_Super","c_Super");
 
     cout << "On removal of the following Reservoir: " << r;
     cout << endl;
@@ -500,17 +449,25 @@ void System::removeReservoir(const string& r){
     }
     cout << "+--------------------+---------------+---------------+---------------+" << endl;
 
-    codeToReservoir = map2;
+    for (auto v : graph.getVertexSet()){
+        if (v->getInfo() == r){
+            for (auto edge : v->getIncoming()){
+                edge->setWeight(peso);
+            }
+        }
+    }
 }
 
 
 void System::permaremoveReservoir(const string& r){
 
-    codeToReservoir.at(r).setDelivery(0);
-
+    double peso;
     for (auto v : graph.getVertexSet()){
-        for (auto edge : v->getAdj()){
-            edge->setFlow(0);
+        if (v->getInfo() == r){
+            for (auto edge : v->getIncoming()){
+                peso = edge->getWeight();
+                edge->setWeight(0);
+            }
         }
     }
 
@@ -543,31 +500,13 @@ void System::removeReservoirVector(const vector<string>& vetor) {
     auto map2 = codeToReservoir;
     auto map3 = codeToCity;
 
-    vector<string> removed;
-
-    Reservoir superSource("superS", "", 0, "r_Super", INF);
-    City superTarget("superT",0,"c_Super",INF,INF);
-
-    graph.addVertex(superSource.getCode());
-    graph.addVertex(superTarget.getCode());
-
-    for (auto& v : graph.getVertexSet()){
-        if (v->getInfo()[0] == 'R'){
-            graph.addEdge(superSource.getCode(), v->getInfo(), INF);
-        }
-        if (v->getInfo()[0] == 'C'){
-            graph.addEdge(v->getInfo(),superTarget.getCode(), INF);
-        }
-    }
+    vector<pair<string,double>> removed;
 
     for (const auto& r : vetor){
         if (codeToReservoir.find(r) != codeToReservoir.end()){
             permaremoveReservoir(r);
             codeToReservoir = map2;
-            removed.push_back(r);
-            for (const auto& reservatorio : removed){
-                codeToReservoir.at(reservatorio).setDelivery(0);
-            }
+            removed.emplace_back(r, codeToReservoir.at(r).getDelivery());
         }
         else{
             cout << "The chosen reservoir, '" << r << "'does not exist" << endl;
@@ -576,11 +515,22 @@ void System::removeReservoirVector(const vector<string>& vetor) {
 
     }
 
-    graph.removeVertex(superTarget.getCode());
-    graph.removeVertex(superSource.getCode());
-
     codeToCity = map3;
-    codeToReservoir = map2;
+    //reset the graph using the "removed" vector of pairs to reset the weights
+    for (auto v : graph.getVertexSet()){
+        if (v->getInfo()[0] == 'r'){
+            for (auto e : v->getAdj()){
+                for (auto& p : removed){
+                    if (e->getDest()->getInfo() == p.first){
+                        e->setWeight(p.second);
+                        break;
+                    }
+                }
+            }
+            break;
+        }
+    }
+
 }
 
 
@@ -592,31 +542,8 @@ void System::removePS(const string& ps){
         return;
     }
 
-    auto map2 = codeToReservoir;
-
-    Reservoir superSource("superS", "", 0, "r_Super", INF);
-    City superTarget("superT",0,"c_Super",INF,INF);
-
-    graph.addVertex(superSource.getCode());
-    graph.addVertex(superTarget.getCode());
-
-    unordered_map<string,double> deliveries;
-
-    for (auto& v : graph.getVertexSet()){
-        if (v->getInfo()[0] == 'R'){
-            graph.addEdge(superSource.getCode(), v->getInfo(), INF);
-        }
-        if (v->getInfo()[0] == 'C'){
-            graph.addEdge(v->getInfo(),superTarget.getCode(), INF);
-        }
-    }
-
-
     for (auto v : graph.getVertexSet()){
         if (v->getInfo() == ps){
-            for (auto e : v->getAdj()){
-                e->setWeight(0);
-            }
             for (auto e : v->getIncoming()){
                 e->setWeight(0);
             }
@@ -624,17 +551,8 @@ void System::removePS(const string& ps){
         }
     }
 
+    edmondsKarp(graph,"r_Super","c_Super");
 
-    for (auto v : graph.getVertexSet()){
-        for (auto edge : v->getAdj()){
-            edge->setFlow(0);
-        }
-    }
-
-    edmondsKarp(graph,superSource.getCode(),superTarget.getCode());
-
-    graph.removeVertex(superTarget.getCode());
-    graph.removeVertex(superSource.getCode());
 
     cout << "On removal of the following pumping station: " << ps;
     cout << endl;
@@ -658,22 +576,18 @@ void System::removePS(const string& ps){
 
     for (auto v : graph.getVertexSet()){
         for (auto edge : v->getAdj()){
-            string source = edge->getOrig()->getInfo();
-            string target = edge->getDest()->getInfo();
-            edge->setFlow(codesToPipe.at(source+target).getFlow());
-            edge->setWeight(codesToPipe.at(source+target).getCapacity());
+            if (v->getInfo()[0] != 'r' && v->getInfo()[0] != 'c'){
+                string source = edge->getOrig()->getInfo();
+                string target = edge->getDest()->getInfo();
+                edge->setFlow(codesToPipe.at(source+target).getFlow());
+                edge->setWeight(codesToPipe.at(source+target).getCapacity());
+            }
         }
     }
-
-    codeToReservoir = map2;
 }
 
 
 void System::permaremovePS(const string& ps){
-
-    auto map2 = codeToReservoir;
-
-    unordered_map<string,double> deliveries;
 
     //remover o peso da edges
     for (auto v : graph.getVertexSet()){
@@ -685,13 +599,6 @@ void System::permaremovePS(const string& ps){
                 e->setWeight(0);
             }
             break;
-        }
-    }
-
-    //resetar o flow
-    for (auto v : graph.getVertexSet()){
-        for (auto edge : v->getAdj()){
-            edge->setFlow(0);
         }
     }
 
@@ -722,63 +629,34 @@ void System::permaremovePS(const string& ps){
 
 void System::removePSVector(const vector<string>& vetor) {
 
-    auto map2 = codeToReservoir; //guardar a informação
+    //guardar a informação
     auto map3 = codeToCity;
 
     vector<string> removed; //vetor para dar track ao que ja foi removido
 
-    Reservoir superSource("superS", "", 0, "r_Super", INF);
-    City superTarget("superT",0,"c_Super",INF,INF);
-
-    graph.addVertex(superSource.getCode());
-    graph.addVertex(superTarget.getCode());
-
-    for (auto& v : graph.getVertexSet()){
-        if (v->getInfo()[0] == 'R'){
-            graph.addEdge(superSource.getCode(), v->getInfo(), INF);
-        }
-        if (v->getInfo()[0] == 'C'){
-            graph.addEdge(v->getInfo(),superTarget.getCode(), INF);
-        }
-    }
 
     for (const auto& ps : vetor){
         if (codeToStation.find(ps) != codeToStation.end()){
             permaremovePS(ps); //remover
-            codeToReservoir = map2; //resetar o codeToReservoir para nao ficar tudo a 0s na maxdelivery
-            removed.push_back(ps); //adicionar ao vetor de dar track
-
-            //remover os que já estao no vetor para poder começar a proxima iteração
-            for (auto v : graph.getVertexSet()){
-                if (v->getInfo() == ps){
-                    for (auto edge : v->getAdj()){
-                        edge->setWeight(0);
-                    }
-                }
-            }
         }
         else{
             cout << "The chosen Pumping Station, '" << ps << "', does not exist" << endl;
             cout << "Skipping..." << endl << endl;
         }
-
     }
-
-    graph.removeVertex(superTarget.getCode());
-    graph.removeVertex(superSource.getCode());
-
 
     //resetar a informação
 
     codeToCity = map3;
-    codeToReservoir = map2;
 
     for (auto v : graph.getVertexSet()){
         for (auto edge : v->getAdj()){
-            string source = edge->getOrig()->getInfo();
-            string target = edge->getDest()->getInfo();
-            edge->setFlow(codesToPipe.at(source+target).getFlow());
-            edge->setWeight(codesToPipe.at(source+target).getCapacity());
+            if (v->getInfo()[0] != 'r' && v->getInfo()[0] != 'c'){
+                string source = edge->getOrig()->getInfo();
+                string target = edge->getDest()->getInfo();
+                edge->setFlow(codesToPipe.at(source+target).getFlow());
+                edge->setWeight(codesToPipe.at(source+target).getCapacity());
+            }
         }
     }
 }
@@ -786,29 +664,10 @@ void System::removePSVector(const vector<string>& vetor) {
 
 void System::removePipe(const string& pa, const string& pb){
 
-    if (codeToStation.find(pa+pb) == codeToStation.end()){
+    if (codesToPipe.find(pa+pb) == codesToPipe.end()){
         cout << "The chosen Pipeline, '" << pa << " -> " << pb << "'does not exist" << endl;
         cout << "Please try again with valid input." << endl;
         return;
-    }
-
-    auto map2 = codeToReservoir;
-
-    Reservoir superSource("superS", "", 0, "r_Super", INF);
-    City superTarget("superT",0,"c_Super",INF,INF);
-
-    graph.addVertex(superSource.getCode());
-    graph.addVertex(superTarget.getCode());
-
-    unordered_map<string,double> deliveries;
-
-    for (auto& v : graph.getVertexSet()){
-        if (v->getInfo()[0] == 'R'){
-            graph.addEdge(superSource.getCode(), v->getInfo(), INF);
-        }
-        if (v->getInfo()[0] == 'C'){
-            graph.addEdge(v->getInfo(),superTarget.getCode(), INF);
-        }
     }
 
 
@@ -823,18 +682,7 @@ void System::removePipe(const string& pa, const string& pb){
         }
     }
 
-
-    for (auto& v : graph.getVertexSet()){
-        for (auto& e : v->getAdj()){
-            e->setFlow(0);
-        }
-    }
-
-    edmondsKarp(graph,superSource.getCode(),superTarget.getCode());
-
-    graph.removeVertex(superSource.getCode());
-    graph.removeVertex(superTarget.getCode());
-
+    edmondsKarp(graph,"r_Super","c_Super");
 
     cout << "On removal of the following Pipeline: " << pa << " -> " << pb;
 
@@ -860,17 +708,14 @@ void System::removePipe(const string& pa, const string& pb){
 
     for (auto v : graph.getVertexSet()){
         for (auto e : v->getAdj()){
-            auto s = e->getOrig()->getInfo();
-            auto t = e->getDest()->getInfo();
-            e->setFlow(codesToPipe.at(s+t).getFlow());
-            if (s+t == pa+pb){
-                e->setWeight(codesToPipe.at(s+t).getCapacity());
+            if (v->getInfo()[0] != 'r' && v->getInfo()[0] != 'c'){
+                string source = e->getOrig()->getInfo();
+                string target = e->getDest()->getInfo();
+                e->setFlow(codesToPipe.at(source+target).getFlow());
+                e->setWeight(codesToPipe.at(source+target).getCapacity());
             }
         }
     }
-
-    codeToReservoir = map2;
-
 }
 
 
@@ -884,12 +729,6 @@ void System::permaremovePipe(const string& pa, const string& pb){
                 }
             }
             break;
-        }
-    }
-
-    for (auto& v : graph.getVertexSet()){
-        for (auto& e : v->getAdj()){
-            e->setFlow(0);
         }
     }
 
@@ -924,62 +763,30 @@ void System::removePipeVector(const vector<string>& vetor) {
     auto map2 = codeToReservoir; //guardar a informação
     auto map3 = codeToCity;
 
-    vector<string> removed; //vetor para dar track ao que ja foi removido
-
-    Reservoir superSource("superS", "", 0, "r_Super", INF);
-    City superTarget("superT",0,"c_Super",INF,INF);
-
-    graph.addVertex(superSource.getCode());
-    graph.addVertex(superTarget.getCode());
-
-    for (auto& v : graph.getVertexSet()){
-        if (v->getInfo()[0] == 'R'){
-            graph.addEdge(superSource.getCode(), v->getInfo(), INF);
-        }
-        if (v->getInfo()[0] == 'C'){
-            graph.addEdge(v->getInfo(),superTarget.getCode(), INF);
-        }
-    }
 
     for (const auto& pipe : vetor){
         if (codesToPipe.find(pipe) != codesToPipe.end()){
             permaremovePipe(codesToPipe.at(pipe).getSource(),codesToPipe.at(pipe).getTarget()); //remover
-            codeToReservoir = map2; //resetar o codeToReservoir para nao ficar tudo a 0s na maxdelivery
-            removed.emplace_back(pipe); //adicionar ao vetor de dar track
-
-            //remover os que já estao no vetor para poder começar a proxima iteração
-            for (auto v : graph.getVertexSet()){
-                if (v->getInfo() == codesToPipe.at(pipe).getSource()){
-                    for (auto edge : v->getAdj()){
-                        if (edge->getDest()->getInfo() == codesToPipe.at(pipe).getTarget()){
-                            edge->setWeight(0);
-                        }
-                    }
-                }
-            }
         }
         else{
             cout << "The chosen Pipeline, '" << pipe <<  "', does not exist" << endl;
             cout << "Skipping..." << endl << endl;
         }
-
     }
-
-    graph.removeVertex(superTarget.getCode());
-    graph.removeVertex(superSource.getCode());
 
 
     //resetar a informação
 
     codeToCity = map3;
-    codeToReservoir = map2;
 
     for (auto v : graph.getVertexSet()){
         for (auto edge : v->getAdj()){
-            string source = edge->getOrig()->getInfo();
-            string target = edge->getDest()->getInfo();
-            edge->setFlow(codesToPipe.at(source+target).getFlow());
-            edge->setWeight(codesToPipe.at(source+target).getCapacity());
+            if(v->getInfo()[0] != 'r' && v->getInfo()[0] != 'c'){
+                string source = edge->getOrig()->getInfo();
+                string target = edge->getDest()->getInfo();
+                edge->setFlow(codesToPipe.at(source+target).getFlow());
+                edge->setWeight(codesToPipe.at(source+target).getCapacity());
+            }
         }
     }
 }

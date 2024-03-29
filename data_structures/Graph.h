@@ -97,6 +97,10 @@ protected:
 template <class T>
 class Graph {
 public:
+    Graph(const Graph<T> &g);
+
+    Graph() = default;
+
     ~Graph();
     /*
     * Auxiliary function to find a vertex with a given the content.
@@ -355,6 +359,12 @@ template <class T>
 std::vector<Vertex<T> *> Graph<T>::getVertexSet() const {
     return vertexSet;
 }
+
+template <class T>
+Graph<T>::Graph(const Graph<T> &g) {
+    vertexSet = g.getVertexSet();
+}
+
 
 /*
  * Auxiliary function to find a vertex with a given content.

@@ -28,8 +28,6 @@ private:
     unordered_map<string,Pipe> codesToPipe;
 
 
-    void edmondsKarp(Graph<string>& g, const string& source, const string& target);
-
 public:
     System();
     void readAndParseNodes();
@@ -85,6 +83,12 @@ public:
     void permaremovePipe(const string &pa, const string &pb);
 
     void removePipeVector(const vector<string> &vetor);
+
+    void edmondsKarp(Graph<string> *g, const string &source, const string &target);
+
+    void edmondsKarp(Graph<string> &g, const string &source, const string &target);
+
+    bool findAugmentingPath(Graph<string> &g, Vertex<string> *s, Vertex<string> *t);
 };
 
 

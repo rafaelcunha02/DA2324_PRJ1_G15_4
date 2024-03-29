@@ -26,10 +26,7 @@ int main() {
 
 
     system.removePSVector(vetor);*/
-
-
     App::run();
-
 
 }
 
