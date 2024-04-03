@@ -5,9 +5,15 @@
 
 using namespace std;
 
+
+/**
+ * @brief Default constructor
+ */
 System::System() = default;
 
 //lê os ficheiros e cria os objetos
+
+
 void System::readAndParseNodes() {
 
     ifstream file("../data/Reservoir.csv");
@@ -102,7 +108,6 @@ void System::readAndParseNodes() {
 
 
 void System::readAndParseEdges() {
-
 
     ifstream file("../data/Pipes.csv");
     string line;
