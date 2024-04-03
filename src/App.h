@@ -1,10 +1,5 @@
-//
-// Created by Rafa on 21/03/2024.
-//
-
 #ifndef UNTITLED17_APP_H
 #define UNTITLED17_APP_H
-
 
 /**
  * @brief Represents the main application class for this project.
@@ -15,7 +10,6 @@
 class App {
 
 public:
-
     /**
      * @brief Executes the main functionalities of the application.
      *
@@ -25,7 +19,5 @@ public:
      */
     static void run();
 };
-
-
 
 #endif //UNTITLED17_APP_H

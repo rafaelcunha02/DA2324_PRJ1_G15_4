@@ -408,29 +408,29 @@ void System::averageFlowPipes(){
         }
     }
 
+    double mean = total/count;
+
     cout << "---------------------";
     cout << "Final stats--------------------" << endl;
-    cout << "Average flow per pipe: " << total/count << endl; //media de flow
+    cout << "Average flow per pipe: " << mean << endl; //media de flow
     cout << "Average percentage of flow per pipe: " << totalmedias / count << endl; //média das médias de flow
 
 
     //Calculo da Variancia
     //literalmente segui pseudocodigo da wikipedia e nem assim, alguem me mate bruh
     double n = 0;
-    double sum = 0;
-    double sum_sqr = 0;
+    double aux = 0;
 
     for (auto v: graph.getVertexSet()){
         for (auto e : v->getAdj()){
-
-            n = n+1;
-            sum = sum + e->getFlow();
-            sum_sqr = sum_sqr + (e->getFlow() * e->getFlow());
+            n += 1;
+            aux += (e->getFlow() - mean) * (e->getFlow() - mean);
         }
     }
 
-    auto mean = sum/n;
-    auto variance = (sum_sqr - sum*mean)/(n-1);
+    //var = ((x1 - m)² + (x2 - m)² + ... + (xn - m)²) / n
+
+    double variance = aux / n;
 
     //mais um print feio
     cout << "Variance: " << variance;

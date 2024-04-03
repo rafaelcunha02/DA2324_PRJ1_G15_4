@@ -1,6 +1,5 @@
-//
-// Created by Rafa on 05/03/2024.
-//
+#ifndef DA2324_PRJ1_G15_4_PARSING_H
+#define DA2324_PRJ1_G15_4_PARSING_H
 
 #include "../data_structures/Graph.h"
 #include "Reservoir.h"
@@ -11,14 +10,10 @@
 #include <sstream>
 #include <fstream>
 #include <unordered_map>
-
 using namespace std;
 
-#ifndef DA2324_PRJ1_G15_4_PARSING_H
-#define DA2324_PRJ1_G15_4_PARSING_H
-
-
 class System {
+
 private:
     Graph<string> graph;
 
@@ -93,6 +88,5 @@ public:
 
     bool findAugmentingPath(Graph<string> &g, Vertex<string> *s, Vertex<string> *t);
 };
-
 
 #endif //DA2324_PRJ1_G15_4_PARSING_H

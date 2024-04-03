@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="untitled17"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;CMake Files\docs\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/gcfc44/Desktop/DA/Projeto1/DA2324_PRJ1_G15_4/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -j4 -f &quot;/home/gcfc44/Desktop/DA/Projeto1/DA2324_PRJ1_G15_4/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/gmake -j4 -f &quot;/home/gcfc44/Desktop/DA/Projeto1/DA2324_PRJ1_G15_4/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j4 -f &quot;/home/gcfc44/Desktop/DA/Projeto1/DA2324_PRJ1_G15_4/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j4 -f &quot;/home/gcfc44/Desktop/DA/Projeto1/DA2324_PRJ1_G15_4/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="untitled17">
+				<Option output="/home/gcfc44/Desktop/DA/Projeto1/DA2324_PRJ1_G15_4/cmake-build-debug/untitled17" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/gcfc44/Desktop/DA/Projeto1/DA2324_PRJ1_G15_4/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/include/c++/11"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/11"/>
+					<Add directory="/usr/include/c++/11/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/11/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -j4 -f &quot;/home/gcfc44/Desktop/DA/Projeto1/DA2324_PRJ1_G15_4/cmake-build-debug/Makefile&quot;  VERBOSE=1 untitled17"/>
+					<CompileFile command="/usr/bin/gmake -j4 -f &quot;/home/gcfc44/Desktop/DA/Projeto1/DA2324_PRJ1_G15_4/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j4 -f &quot;/home/gcfc44/Desktop/DA/Projeto1/DA2324_PRJ1_G15_4/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j4 -f &quot;/home/gcfc44/Desktop/DA/Projeto1/DA2324_PRJ1_G15_4/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="untitled17/fast">
+				<Option output="/home/gcfc44/Desktop/DA/Projeto1/DA2324_PRJ1_G15_4/cmake-build-debug/untitled17" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/gcfc44/Desktop/DA/Projeto1/DA2324_PRJ1_G15_4/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/include/c++/11"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/11"/>
+					<Add directory="/usr/include/c++/11/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/11/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -j4 -f &quot;/home/gcfc44/Desktop/DA/Projeto1/DA2324_PRJ1_G15_4/cmake-build-debug/Makefile&quot;  VERBOSE=1 untitled17/fast"/>
+					<CompileFile command="/usr/bin/gmake -j4 -f &quot;/home/gcfc44/Desktop/DA/Projeto1/DA2324_PRJ1_G15_4/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j4 -f &quot;/home/gcfc44/Desktop/DA/Projeto1/DA2324_PRJ1_G15_4/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j4 -f &quot;/home/gcfc44/Desktop/DA/Projeto1/DA2324_PRJ1_G15_4/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Doxygen">
+				<Option working_dir="/home/gcfc44/Desktop/DA/Projeto1/DA2324_PRJ1_G15_4/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -j4 -f &quot;/home/gcfc44/Desktop/DA/Projeto1/DA2324_PRJ1_G15_4/cmake-build-debug/Makefile&quot;  VERBOSE=1 Doxygen"/>
+					<CompileFile command="/usr/bin/gmake -j4 -f &quot;/home/gcfc44/Desktop/DA/Projeto1/DA2324_PRJ1_G15_4/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j4 -f &quot;/home/gcfc44/Desktop/DA/Projeto1/DA2324_PRJ1_G15_4/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j4 -f &quot;/home/gcfc44/Desktop/DA/Projeto1/DA2324_PRJ1_G15_4/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/gcfc44/Desktop/DA/Projeto1/DA2324_PRJ1_G15_4/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -j4 -f &quot;/home/gcfc44/Desktop/DA/Projeto1/DA2324_PRJ1_G15_4/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/gmake -j4 -f &quot;/home/gcfc44/Desktop/DA/Projeto1/DA2324_PRJ1_G15_4/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j4 -f &quot;/home/gcfc44/Desktop/DA/Projeto1/DA2324_PRJ1_G15_4/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j4 -f &quot;/home/gcfc44/Desktop/DA/Projeto1/DA2324_PRJ1_G15_4/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/gcfc44/Desktop/DA/Projeto1/DA2324_PRJ1_G15_4/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -j4 -f &quot;/home/gcfc44/Desktop/DA/Projeto1/DA2324_PRJ1_G15_4/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/gmake -j4 -f &quot;/home/gcfc44/Desktop/DA/Projeto1/DA2324_PRJ1_G15_4/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j4 -f &quot;/home/gcfc44/Desktop/DA/Projeto1/DA2324_PRJ1_G15_4/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j4 -f &quot;/home/gcfc44/Desktop/DA/Projeto1/DA2324_PRJ1_G15_4/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/gcfc44/Desktop/DA/Projeto1/DA2324_PRJ1_G15_4/data_structures/Graph.h">
+			<Option target="untitled17"/>
+		</Unit>
+		<Unit filename="/home/gcfc44/Desktop/DA/Projeto1/DA2324_PRJ1_G15_4/data_structures/MutablePriorityQueue.h">
+			<Option target="untitled17"/>
+		</Unit>
+		<Unit filename="/home/gcfc44/Desktop/DA/Projeto1/DA2324_PRJ1_G15_4/data_structures/UFDS.cpp">
+			<Option target="untitled17"/>
+		</Unit>
+		<Unit filename="/home/gcfc44/Desktop/DA/Projeto1/DA2324_PRJ1_G15_4/data_structures/UFDS.h">
+			<Option target="untitled17"/>
+		</Unit>
+		<Unit filename="/home/gcfc44/Desktop/DA/Projeto1/DA2324_PRJ1_G15_4/main.cpp">
+			<Option target="untitled17"/>
+		</Unit>
+		<Unit filename="/home/gcfc44/Desktop/DA/Projeto1/DA2324_PRJ1_G15_4/src/App.cpp">
+			<Option target="untitled17"/>
+		</Unit>
+		<Unit filename="/home/gcfc44/Desktop/DA/Projeto1/DA2324_PRJ1_G15_4/src/App.h">
+			<Option target="untitled17"/>
+		</Unit>
+		<Unit filename="/home/gcfc44/Desktop/DA/Projeto1/DA2324_PRJ1_G15_4/src/City.h">
+			<Option target="untitled17"/>
+		</Unit>
+		<Unit filename="/home/gcfc44/Desktop/DA/Projeto1/DA2324_PRJ1_G15_4/src/Pipe.h">
+			<Option target="untitled17"/>
+		</Unit>
+		<Unit filename="/home/gcfc44/Desktop/DA/Projeto1/DA2324_PRJ1_G15_4/src/Reservoir.h">
+			<Option target="untitled17"/>
+		</Unit>
+		<Unit filename="/home/gcfc44/Desktop/DA/Projeto1/DA2324_PRJ1_G15_4/src/Station.h">
+			<Option target="untitled17"/>
+		</Unit>
+		<Unit filename="/home/gcfc44/Desktop/DA/Projeto1/DA2324_PRJ1_G15_4/src/System.cpp">
+			<Option target="untitled17"/>
+		</Unit>
+		<Unit filename="/home/gcfc44/Desktop/DA/Projeto1/DA2324_PRJ1_G15_4/src/System.h">
+			<Option target="untitled17"/>
+		</Unit>
+		<Unit filename="/home/gcfc44/Desktop/DA/Projeto1/DA2324_PRJ1_G15_4/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/home/gcfc44/Desktop/DA/Projeto1/DA2324_PRJ1_G15_4/docs/Doxyfile">
+			<Option virtualFolder="CMake Files\docs\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

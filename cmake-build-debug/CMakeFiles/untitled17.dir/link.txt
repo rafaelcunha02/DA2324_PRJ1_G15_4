@@ -1,0 +1,1 @@
+/usr/bin/c++ -g CMakeFiles/untitled17.dir/main.cpp.o CMakeFiles/untitled17.dir/src/System.cpp.o CMakeFiles/untitled17.dir/data_structures/UFDS.cpp.o CMakeFiles/untitled17.dir/src/App.cpp.o -o untitled17 
