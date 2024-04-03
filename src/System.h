@@ -22,6 +22,9 @@ class System {
 private:
     Graph<string> graph;
 
+
+    // Maps to store the objects created
+    // Estes mapas na sua maioria vao ser necessarios para resetar informação do grafo
     unordered_map<string,Reservoir> codeToReservoir;
     unordered_map<string,City> codeToCity;
     unordered_map<string,Station> codeToStation;

@@ -325,7 +325,6 @@ void basicServiceMetrics(const System& system) {
         cout << "Choose an option:\n";
         cout << "1. Check the Maximum water Flow \n";
         cout << "2. Check Water Supply Sufficiency and Water deficits\n";
-        cout << "3. Balance the Load across the Network \n";
         cout << "b. Go back\n";
         cout << "----------------------------------\n";
         cout << "Your choice: " << endl;
@@ -342,9 +341,6 @@ void basicServiceMetrics(const System& system) {
                 break;
             case '2':
                  sistema.enoughWater();
-                break;
-            case '3':
-                //calculateFlights(graph);
                 break;
             case 'b':
                 back = true;
