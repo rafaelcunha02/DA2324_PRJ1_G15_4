@@ -120,7 +120,6 @@ void PipesMenu(const System &system) {
         cout << "Choose an option:\n";
         cout << "1. Check the impact of removing a chosen Pipeline \n";
         cout << "2. Check the impact of removing a chosen set of Pipelines, one at a time \n";
-        cout << "3. Check the impact of removing every Pipeline, one at a time (source-numerical order) \n";
         cout << "b. Go back\n";
         cout << "----------------------------------\n";
         cout << "Your choice: " << endl;
@@ -147,22 +146,30 @@ void PipesMenu(const System &system) {
 
                 break;
             case '2':
-                cout << "Enter comma-separated values for SourceDestination Codes in the desired order of removal: " << endl;
-                cin >> input;
-
-                ss.str(input);
-
-                while (getline(ss, code, ',')) {
-                    pipelineIDs.push_back(code);
-                }
-
-                sistema.removePipeVector(pipelineIDs);
-                pipelineIDs.clear();
-                break;
-            case '3':
-                for (auto v : sistema.getGraph().getVertexSet()){
-                    for (auto edge : v->getAdj()){
-                        pipelineIDs.push_back(edge->getOrig()->getInfo()+edge->getDest()->getInfo());
+                while (true){
+                    cout << "Enter the desired source's Code:" << endl;
+                    cin >> input;
+                    cout << "Enter the desired target's Code:" << endl;
+                    cin >> input2;
+                    pipelineIDs.push_back(input+input2);
+                    cout << "Do you want to remove another pipe? (y/n)" << endl;
+                    while (input[0] != 'n'){
+                        cin >> input;
+                        if (input.size() != 1){
+                            input = 'h';
+                        }
+                        if (input[0] == 'n'){
+                            break;
+                        }
+                        else if (input[0] != 'y'){
+                            cout << "Invalid input. Please try again.\n";
+                        }
+                        else{
+                            break;
+                        }
+                    }
+                    if (input[0] == 'n'){
+                        break;
                     }
                 }
                 sistema.removePipeVector(pipelineIDs);

@@ -131,9 +131,15 @@ void System::readAndParseEdges() {
 
         if(isDirected == 1){
             graph.addEdge(source, dest, capacity);
+            Pipe edge (source,dest, capacity, 0, isDirected);
+            codesToPipe.insert({source+dest,edge});
         }
         else{
             graph.addBidirectionalEdge(source,dest, capacity);
+            Pipe edge (source,dest, capacity, 0, isDirected);
+            codesToPipe.insert({source+dest,edge});
+            codesToPipe.insert({dest+source,edge});
+
         }
     }
     //tambem temos mapa de Pipes, mas nao adiciona já ao mapa e já te explico porquê
@@ -263,25 +269,28 @@ void System::initialize() {
     for (auto& v : graph.getVertexSet()){
         if (v->getInfo()[0] == 'R'){
             graph.addEdge(superSource.getCode(), v->getInfo(), codeToReservoir.at(v->getInfo()).getDelivery());
+            Pipe edge (superSource.getCode(),v->getInfo(), codeToReservoir.at(v->getInfo()).getDelivery(), 0, 1);
+            codesToPipe.insert({superSource.getCode()+v->getInfo(),edge});
         }
         else if (v->getInfo()[0] == 'C'){
             graph.addEdge(v->getInfo(),superTarget.getCode(), codeToCity.at(v->getInfo()).getDemand());
+            Pipe edge (v->getInfo(),superTarget.getCode(), codeToCity.at(v->getInfo()).getDemand(), 0, 1);
+            codesToPipe.insert({v->getInfo()+superTarget.getCode(),edge});
         }
     }
 
     edmondsKarp(graph,superSource.getCode(),superTarget.getCode());
 
-    //esta parte preenche o tal mapa das Pipes
+    //esta parte preenche os flows do mapa das Pipes
     for (auto v : graph.getVertexSet()){
         if (v->getInfo()[0] != 'r' && v->getInfo()[0] != 'c'){
             for (auto e : v->getAdj()){
                 pair<string,string> par;
                 par.first = e->getOrig()->getInfo();
                 par.second = e->getDest()->getInfo();
-                Pipe edge (par.first,par.second,e->getWeight(),e->getFlow()); //criar a Pipe com a informação
                 string identifier = par.first + par.second; //concatenar os codigos dos vertices
-
-                codesToPipe.insert({identifier,edge}); //associar os codigos à informação
+                cout << identifier << endl;
+                codesToPipe.at(identifier).setFlow(e->getFlow()); //associar o flow à informação
             }
         }
     }
@@ -777,15 +786,37 @@ void System::removePipe(const string& pa, const string& pb){
     }
 
 
-    //arroz
-    for (auto v : graph.getVertexSet()){
-        if (v->getInfo() == pa){
-            for (auto edge : v->getAdj()){
-                if (edge->getDest()->getInfo() == pb){
-                    edge->setWeight(0);
+    if (codesToPipe.at(pa+pb).getDirected() == 1){
+        for (auto v : graph.getVertexSet()){
+            if (v->getInfo() == pa){
+                for (auto edge : v->getAdj()){
+                    if (edge->getDest()->getInfo() == pb){
+                        edge->setWeight(0);
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+    }
+    else{
+        for (auto v : graph.getVertexSet()){
+            if (v->getInfo() == pa){
+                for (auto edge : v->getAdj()){
+                    if (edge->getDest()->getInfo() == pb){
+                        edge->setWeight(0);
+                        break;
+                    }
                 }
             }
-            break;
+            if (v->getInfo() == pb){
+                for (auto edge : v->getAdj()){
+                    if (edge->getDest()->getInfo() == pa){
+                        edge->setWeight(0);
+                        break;
+                    }
+                }
+            }
         }
     }
 
@@ -830,15 +861,37 @@ void System::removePipe(const string& pa, const string& pb){
 void System::permaremovePipe(const string& pa, const string& pb){
 
 
-    //em inglês diz-se "rice"
-    for (auto v : graph.getVertexSet()){
-        if (v->getInfo() == pa){
-            for (auto edge : v->getAdj()){
-                if (edge->getDest()->getInfo() == pb){
-                    edge->setWeight(0);
+    if (codesToPipe.at(pa+pb).getDirected() == 1){
+        for (auto v : graph.getVertexSet()){
+            if (v->getInfo() == pa){
+                for (auto edge : v->getAdj()){
+                    if (edge->getDest()->getInfo() == pb){
+                        edge->setWeight(0);
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+    }
+    else{
+        for (auto v : graph.getVertexSet()){
+            if (v->getInfo() == pa){
+                for (auto edge : v->getAdj()){
+                    if (edge->getDest()->getInfo() == pb){
+                        edge->setWeight(0);
+                        break;
+                    }
                 }
             }
-            break;
+            if (v->getInfo() == pb){
+                for (auto edge : v->getAdj()){
+                    if (edge->getDest()->getInfo() == pa){
+                        edge->setWeight(0);
+                        break;
+                    }
+                }
+            }
         }
     }
 
@@ -881,10 +934,13 @@ void System::removePipeVector(const vector<string>& vetor) {
 
     for (const auto& pipe : vetor){
         if (codesToPipe.find(pipe) != codesToPipe.end()){
+            if (codesToPipe.at(pipe).getSource() != "r_Super" && codesToPipe.at(pipe).getTarget() != "c_Super"){
             permaremovePipe(codesToPipe.at(pipe).getSource(),codesToPipe.at(pipe).getTarget()); //remover
+            }
         }
         else{
-            cout << "The chosen Pipeline, '" << pipe <<  "', does not exist" << endl;
+            cout << endl;
+            cout << "The next Pipeline in queue does not exist" << endl;
             cout << "Skipping..." << endl << endl;
         }
     }
