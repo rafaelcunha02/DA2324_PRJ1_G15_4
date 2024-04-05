@@ -8,3 +8,54 @@ flow close to its full capacity. First, you should compute some initial metrics,
 variance of the differences between capacity and flow for each pipe, as well as the maximum
 difference. After executing your balancing algorithm, you should show that these metrics have
 improved."
+
+
+We would start by computing the initial metrics by calculating the average percentage of flow occupancy per pipe and
+the variance of this occupancy, as well as the maximum difference.
+
+We would then create a new private element in the Edge class of our graph, we could call this element, "cost".
+This element would be used to store the cost of the Edge, which would be the percentage of flow occupancy in the Pipe.
+The cost of the Edge would be calculated as follows -> (Flow / Capacity)
+
+Having done this, we could simply run Dijkstra's shortest path algorithm on the graph, with the Edge cost being the
+equivalent of the distance between the nodes and for each path we find through Dijkstra's we would use FindMinResidualAlongPath()
+to find the minimum residual capacity along the path and AugmentFlowAlongPath() to augment the flow along the path.
+
+Basically, this would be a modified version of the EdmondsKarp algorithm, where we would be augmenting the flow in
+the exact same way, but choosing the path to augment the flow along based on the cost of the path, in a different
+order.
+
+Step by step:
+
+1. Calculate the variance, average and maximum difference of the flow occupancy in the pipes.
+2. For each edge in the graph, calculate the cost of the edge as (Flow / Capacity).
+3. Run Edmonds-karp's algorithm with Dijkstra's shortest path being the way to find the path to augment the flow
+along, with the cost of the edge being the distance between the nodes in this version of Dijkstra's.
+4. For each path found by Dijkstra's, use FindMinResidualAlongPath() to find the minimum residual capacity along the path.
+5. Use AugmentFlowAlongPath() to augment the flow along the path.
+
+Pseudocode for the modified Edmonds-karp algorithm:
+
+
+- Calculate the variance, average and maximum difference of the flow occupancy in the pipes and print them
+- Run Edmonds Karp a first time to fill the edges with flow.
+
+void System::edmondsKarpDijkstra(graph,superSource, superTarget) {
+
+
+    // Initialize the cost of each edge to (flow/capacity) and then the flow of each edge to 0
+    for (auto v : VertexSet()) {
+        for (auto e: outgoing edges of v) {
+            e->cost = e->flow / e->capacity
+            e->flow = 0
+        }
+    }
+    // While there is an augmenting path, augment the flow along the path
+    while(findAugmentingPathWithDijkstraCost(g, s, t) ) {
+        f = findMinResidualAlongPath(s, t)
+        augmentFlowAlongPath(s, t, f)
+    }
+}
+
+- Calculate the variance, average and maximum difference of the flow occupancy in the pipes and print them to check
+the results.

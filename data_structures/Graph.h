@@ -99,7 +99,7 @@ class Graph {
 public:
     Graph(const Graph<T> &g);
 
-    Graph() = default;
+    Graph() = default; // Add this line
 
     ~Graph();
     /*
