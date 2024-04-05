@@ -147,6 +147,12 @@ public:
     void edmondsKarp(Graph<string> &g, const string &source, const string &target);
 
     bool findAugmentingPath(Graph<string> &g, Vertex<string> *s, Vertex<string> *t);
+
+    void removePSVectorWithReplacement(const vector<string>& vector1);
+
+    void removeReservoirVectorWithReplacement(const vector<string> &vetor);
+
+    void removePipeVectorWithReplacement(const vector<string> &vetor);
 };
 
 

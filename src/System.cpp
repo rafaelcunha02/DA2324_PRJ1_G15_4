@@ -689,8 +689,8 @@ void System::removePS(const string& ps){
     //visto que temos de resetar o flow de todas de qualquer das formas,
     //nao vale a pena ter ifs constantemente a verificarem se elas vão para a estação que removemos
     for (auto v : graph.getVertexSet()){
-        for (auto edge : v->getAdj()){
-            if (v->getInfo()[0] != 'r' && v->getInfo()[0] != 'c'){
+        if (v->getInfo()[0] != 'r' && v->getInfo()[0] != 'c'){
+            for (auto edge : v->getAdj()){
                 //se não for a supersource ou a super target, resetar
                 //a supersource e a supertarget nao fazem parte dos maps então ia dar erros ao tentar acedê-las
                 string source = edge->getOrig()->getInfo();
@@ -779,8 +779,8 @@ void System::removePSVector(const vector<string>& vetor) {
     codeToCity = map3; //faz-se isto para resetar os maxflows, visto que as permaremove functions atualizam os maxflows das cidades a cada remoção
 
     for (auto v : graph.getVertexSet()){
-        for (auto edge : v->getAdj()){
-            if (v->getInfo()[0] != 'r' && v->getInfo()[0] != 'c'){
+        if (v->getInfo()[0] != 'r' && v->getInfo()[0] != 'c'){
+            for (auto edge : v->getAdj()){
                 //aquele loopzinho classico que ja expliquei em cima que reseta as edges todas
                 //todas menos as da supersource e da supertarget porque nao estao nos mapas
                 string source = edge->getOrig()->getInfo();
@@ -861,8 +861,8 @@ void System::removePipe(const string& pa, const string& pb){
 
 
     for (auto v : graph.getVertexSet()){
-        for (auto e : v->getAdj()){
-            if (v->getInfo()[0] != 'r' && v->getInfo()[0] != 'c'){
+        if (v->getInfo()[0] != 'r' && v->getInfo()[0] != 'c'){
+            for (auto e : v->getAdj()){
                 //loop do costume que (remember) acho que dá pra ser otimizado mas faz cuidado plz
                 string source = e->getOrig()->getInfo();
                 string target = e->getDest()->getInfo();
@@ -968,8 +968,8 @@ void System::removePipeVector(const vector<string>& vetor) {
 
     //arroz de reset do costume
     for (auto v : graph.getVertexSet()){
-        for (auto edge : v->getAdj()){
-            if(v->getInfo()[0] != 'r' && v->getInfo()[0] != 'c'){
+        if(v->getInfo()[0] != 'r' && v->getInfo()[0] != 'c'){
+            for (auto edge : v->getAdj()){
                 string source = edge->getOrig()->getInfo();
                 string target = edge->getDest()->getInfo();
                 edge->setFlow(codesToPipe.at(source+target).getFlow());
@@ -978,6 +978,7 @@ void System::removePipeVector(const vector<string>& vetor) {
         }
     }
 }
+
 
 //chegaste ao fim mano és o goat qq coisa manda mensagem eu devo acordar la pas 11 em principio
 //desculpa nao ir à aula, espero que te tenha ocupado a maioria das 2h

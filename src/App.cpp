@@ -119,7 +119,8 @@ void PipesMenu(const System &system) {
         cout << "----------------------------------\n";
         cout << "Choose an option:\n";
         cout << "1. Check the impact of removing a chosen Pipeline \n";
-        cout << "2. Check the impact of removing a chosen set of Pipelines, one at a time \n";
+        cout << "2. Check the impact of removing a chosen set of Pipelines, one at a time (no replacement) \n";
+        cout << "3. Check the impact of removing every Pipeline, one at a time (with replacement) \n";
         cout << "b. Go back\n";
         cout << "----------------------------------\n";
         cout << "Your choice: " << endl;
@@ -180,6 +181,18 @@ void PipesMenu(const System &system) {
                 break;
             default:
                 cout << "Invalid choice. Please try again.\n";
+            case '3':
+                for (auto v : sistema.getGraph().getVertexSet()){
+                    if(v->getInfo()[0] != 'r'){
+                        for (auto edge : v->getAdj()){
+                            if (edge->getDest()->getInfo() == "c_Super"){
+                                continue;
+                            }
+                            sistema.removePipe(edge->getOrig()->getInfo(), edge->getDest()->getInfo());
+                        }
+                    }
+                }
+                break;
         }
     }
 
@@ -198,7 +211,8 @@ void StationsMenu(const System &system) {
         cout << "Choose an option:\n";
         cout << "1. Check the impact of removing a chosen Station \n";
         cout << "2. Check the impact of removing a chosen set of Stations, one at a time \n";
-        cout << "3. Check the impact of removing every Station, one at a time (numerical order) \n";
+        cout << "3. Check the impact of removing every Station, one at a time (numerical order, no replacement) \n";
+        cout << "4. Check the impact of removing every Station, one at a time (numerical order, with replacement) \n";
         cout << "b. Go back\n";
         cout << "----------------------------------\n";
         cout << "Your choice: " << endl;
@@ -245,6 +259,14 @@ void StationsMenu(const System &system) {
             case 'b':
                 back = true;
                 break;
+
+            case '4':
+                for (auto v : sistema.getGraph().getVertexSet()){
+                    if (v->getInfo()[0] == 'P'){
+                        sistema.removePS(v->getInfo());
+                    }
+                }
+                break;
             default:
                 cout << "Invalid choice. Please try again.\n";
         }
@@ -264,8 +286,9 @@ void ResevoirsMenu(const System &system) {
         cout << "----------------------------------\n";
         cout << "Choose an option:\n";
         cout << "1. Check the impact of removing a chosen Reservoir \n";
-        cout << "2. Check the impact of removing a chosen set of Reservoirs, one at a time \n";
-        cout << "3. Check the impact of removing every Reservoir, one at a time (numerical order) \n";
+        cout << "2. Check the impact of removing a chosen set of Reservoirs, one at a time (no replacement) \n";
+        cout << "3. Check the impact of removing every Reservoir, one at a time (numerical order, no replacement) \n";
+        cout << "4. Check the impact of removing every Reservoir, one at a time (numerical order, with replacement) \n";
         cout << "b. Go back\n";
         cout << "----------------------------------\n";
         cout << "Your choice: " << endl;
@@ -311,6 +334,13 @@ void ResevoirsMenu(const System &system) {
                 break;
             case 'b':
                 back = true;
+                break;
+            case '4':
+                for (auto v : sistema.getGraph().getVertexSet()){
+                    if (v->getInfo()[0] == 'R'){
+                        sistema.removeReservoir(v->getInfo());
+                    }
+                }
                 break;
             default:
                 cout << "Invalid choice. Please try again.\n";
