@@ -113,7 +113,7 @@ CMAKE_FIND_PACKAGE_REDIRECTS_DIR:STATIC=C:/Users/Rafa/CLionProjects/DA2324_PRJ1_
 CMAKE_GNUtoMS:BOOL=OFF
 
 //Install path prefix, prepended onto install directories.
-CMAKE_INSTALL_PREFIX:PATH=C:/Program Files (x86)/untitled17
+CMAKE_INSTALL_PREFIX:PATH=C:/Program Files (x86)/DA_2324_PRJ1_G15_4
 
 //Path to a program.
 CMAKE_LINKER:FILEPATH=C:/Program Files/JetBrains/CLion 2023.2.2/bin/mingw/bin/ld.exe
@@ -248,14 +248,11 @@ DA_2324_PRJ1_G15_4_IS_TOP_LEVEL:STATIC=ON
 //Value Computed by CMake
 DA_2324_PRJ1_G15_4_SOURCE_DIR:STATIC=C:/Users/Rafa/CLionProjects/DA2324_PRJ1_G15_4
 
-//Value Computed by CMake
-untitled17_BINARY_DIR:STATIC=C:/Users/Rafa/CLionProjects/DA2324_PRJ1_G15_4/cmake-build-debug
+//Dot tool for use with Doxygen
+DOXYGEN_DOT_EXECUTABLE:FILEPATH=C:/Users/Rafa/Desktop/Graphviz/bin/dot.exe
 
-//Value Computed by CMake
-untitled17_IS_TOP_LEVEL:STATIC=ON
-
-//Value Computed by CMake
-untitled17_SOURCE_DIR:STATIC=C:/Users/Rafa/CLionProjects/DA2324_PRJ1_G15_4
+//Doxygen documentation generation tool (https://www.doxygen.nl)
+DOXYGEN_EXECUTABLE:FILEPATH=C:/Program Files/doxygen/bin/doxygen.exe
 
 
 ########################
@@ -414,6 +411,12 @@ CMAKE_STATIC_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 CMAKE_STRIP-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_VERBOSE_MAKEFILE
 CMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DOXYGEN_DOT_EXECUTABLE
+DOXYGEN_DOT_EXECUTABLE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: DOXYGEN_EXECUTABLE
+DOXYGEN_EXECUTABLE-ADVANCED:INTERNAL=1
+//Details about finding Doxygen
+FIND_PACKAGE_MESSAGE_DETAILS_Doxygen:INTERNAL=[C:/Program Files/doxygen/bin/doxygen.exe][cfound components: doxygen dot ][v1.9.8()]
 //linker supports push/pop state
 _CMAKE_LINKER_PUSHPOP_STATE_SUPPORTED:INTERNAL=TRUE
 
