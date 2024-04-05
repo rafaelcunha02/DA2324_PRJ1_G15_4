@@ -289,7 +289,6 @@ void System::initialize() {
                 par.first = e->getOrig()->getInfo();
                 par.second = e->getDest()->getInfo();
                 string identifier = par.first + par.second; //concatenar os codigos dos vertices
-                cout << identifier << endl;
                 codesToPipe.at(identifier).setFlow(e->getFlow()); //associar o flow à informação
             }
         }
@@ -342,16 +341,21 @@ void System::maxFlowEachCity(){
     cout << "| City Code    | Max Flow     |" << endl;
     cout << "+--------------+--------------+" << endl;
 
+    vector<std::pair<std::string, City>> cityVector(codeToCity.begin(), codeToCity.end());
 
-    for (const auto& par : codeToCity){
+    sort(cityVector.begin(), cityVector.end(), [](const pair<string, City>& a, const pair<string, City>& b) {
+        int cityNumA = stoi(a.first.substr(2));
+        int cityNumB = stoi(b.first.substr(2));
+        return cityNumA < cityNumB;
+    });
+
+    for (const auto& par : cityVector){
         auto city = par.first;
-        double maxflow = codeToCity.at(city).getMaxFlow();
+        double maxflow = par.second.getMaxFlow();
 
-
-        cout << "| " << setw(12) << std::left << codeToCity.at(city).getCode() << " | " << setw(12) << maxflow << " |" << endl;
+        cout << "| " << setw(12) << std::left << city << " | " << setw(12) << maxflow << " |" << endl;
         cout << "+--------------+--------------+" << endl;
     }
-
 }
 
 
@@ -370,20 +374,32 @@ void System::maxFlowSystem(){
 //compara o maxflow de cada cidade com a sua demanda e printa o quanto falta caso nao chegue à demanda
 //water deficit = demanda - maxflow
 void System::enoughWater() {
-    cout << "+--------------+-----------------------+" << endl;
-    cout << "| City Code    | Water Deficit         |" << endl;
-    cout << "+--------------+-----------------------+" << endl;
+    cout << "+--------------+-----------------------+--------------+--------------+" << endl;
+    cout << "| City Code    | Water Deficit         | Demand       | Flow         |" << endl;
+    cout << "+--------------+-----------------------+--------------+--------------+" << endl;
+
+    // Create a vector of pairs from the map
+    std::vector<std::pair<std::string, City>> cityVector(codeToCity.begin(), codeToCity.end());
+
+    // Sort the vector based on the city code
+    sort(cityVector.begin(), cityVector.end(), [](const pair<string, City>& a, const pair<string, City>& b) {
+        int cityNumA = stoi(a.first.substr(2));
+        int cityNumB = stoi(b.first.substr(2));
+        return cityNumA < cityNumB;
+    });
 
     bool enough = true;
-    for (const auto& par : codeToCity) {
+    // Iterate over the sorted vector and print the results
+    for (const auto& par : cityVector) {
         auto maxflow = par.second.getMaxFlow();
-        if (maxflow < par.second.getDemand()) {
+        auto demand = par.second.getDemand();
+        if (maxflow < demand) {
             enough = false;
-            cout << "| " << setw(12) << left << par.second.getCode() << " | Deficit: " << setw(12) << left << (par.second.getDemand() - maxflow) << " |" << endl;
+            cout << "| " << setw(12) << left << par.first << " | Deficit: " << setw(12) << left << (demand - maxflow) << " | " << setw(12) << left << demand << " | " << setw(12) << left << maxflow << " |" << endl;
         }
     }
 
-    cout << "+--------------+-----------------------+" << endl;
+    cout << "+--------------+-----------------------+---------------+-------------+" << endl;
 
     if (enough) {
         cout << endl << "This network can successfully meet the water needs of every delivery site." << endl;
