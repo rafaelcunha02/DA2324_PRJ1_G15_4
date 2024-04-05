@@ -379,65 +379,6 @@ void System::enoughWater() {
 }
 
 
-
-//a VARIANCIA é calculada aqui dentro
-//é aqui que supostamente tá mal
-//isto também printa e tá um bocado feio, era fixe alterar para ser mais user friendly
-void System::averageFlowPipes(){
-
-    double total = 0; //somatório do flow de todas as edges
-    double totalmedias = 0; //somatório das médias de flow de todas as edges
-    double count = 0; //contador de edges
-
-    for (auto v : graph.getVertexSet()){
-        for (auto e : v->getAdj()){
-            //para cada edge
-            auto source = e->getOrig()->getInfo();
-            auto target = e->getDest()->getInfo();
-
-            //printa de onde vai até onde, o flow atual, o peso e a percentagem de flow;
-            cout << "Pipe from " << source << " to " << target << ": "
-            << e->getFlow() << "/" << e->getWeight()
-            << " (" << (e->getFlow()/e->getWeight()) * 100 << "%)" << endl;
-
-
-            count++; //incrementa o contador
-            total += e->getFlow(); //adiciona o flow ao total
-            totalmedias += (e->getFlow()/e->getWeight()) * 100; //adiciona a percentagem de flow ao total de médias
-
-        }
-    }
-
-    double mean = total/count;
-
-    cout << "---------------------";
-    cout << "Final stats--------------------" << endl;
-    cout << "Average flow per pipe: " << mean << endl; //media de flow
-    cout << "Average percentage of flow per pipe: " << totalmedias / count << endl; //média das médias de flow
-
-
-    //Calculo da Variancia
-    //literalmente segui pseudocodigo da wikipedia e nem assim, alguem me mate bruh
-    double n = 0;
-    double aux = 0;
-
-    for (auto v: graph.getVertexSet()){
-        for (auto e : v->getAdj()){
-            n += 1;
-            aux += (e->getFlow() - mean) * (e->getFlow() - mean);
-        }
-    }
-
-    //var = ((x1 - m)² + (x2 - m)² + ... + (xn - m)²) / n
-
-    double variance = aux / n;
-
-    //mais um print feio
-    cout << "Variance: " << variance;
-
-}
-
-
 //função que remove um reservatório e reseta o grafo logo a seguir
 //usada para remover um unico reservatório (ver as 3 opções do Menu)
 void System::removeReservoir(const string& r){
