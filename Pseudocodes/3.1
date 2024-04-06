@@ -20,6 +20,6 @@ hash tables
   a. Identify all the cities that the removed reservoir could possibly reach.
   b. For each city identified in the previous step, use the unordered map find all the reservoirs that reach it.
   c. For each reservoir identified in the previous step, use the same map to add the cities it can reach
-  c. Repeat steps 3b and 3c until no new cities are identified.
+  d. Repeat steps 3b and 3c until no new cities are identified.
 3 -> Run the Edmonds-Karp algorithm to find the maximum flow in a residual graph containing only cities and
 reservoirs that were identified in previous steps.
