@@ -3,4 +3,23 @@ Question 3.1
 "Could you think about an algorithm that only sometimes needs to run the entire Max-Flow algorithm from scratch to
 evaluate the impact of removing all the reservoirs, one at a time? Discuss this in your presentation."
 
-To solve this problem, we thought about finding all the cities that the given reservoir can reach, for every reservoir in the graph.
+To achieve this, we would first establish associations between each reservoir and the cities it can potentially
+reach. When a reservoir is chosen for removal, we would identify all it's reachable cities and determine the reservoirs
+that also can reach them. We would then repeat the process for all those reservoirs too, to capture direct and indirect
+connections, updating the list of reachable cities until no new cities are found. This step is necessary because by
+removing a reservoir, we may also be redirecting the flow of water from other reservoirs, which makes them indirectly
+affected.
+Then, we would compute the maximum flow using the Edmonds-Karp algorithm, focusing only on the subset of affected
+reservoirs and cities. This would allow us to avoid running the whole algorithm from scratch in some cases.
+
+Step by Step:
+
+1 -> For each reservoir in the graph, associate it to all the cities that can be reached from it using BFS and
+hash tables
+2 -> When removing a reservoir, perform the following steps:
+  a. Identify all the cities that the removed reservoir could possibly reach.
+  b. For each city identified in the previous step, use the unordered map find all the reservoirs that reach it.
+  c. For each reservoir identified in the previous step, use the same map to add the cities it can reach
+  c. Repeat steps 3b and 3c until no new cities are identified.
+3 -> Run the Edmonds-Karp algorithm to find the maximum flow in a residual graph containing only cities and
+reservoirs that were identified in previous steps.
