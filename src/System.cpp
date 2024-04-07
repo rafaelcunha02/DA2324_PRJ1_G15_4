@@ -11,9 +11,6 @@ using namespace std;
  */
 System::System() = default;
 
-//lê os ficheiros e cria os objetos
-
-
 void System::readAndParseNodes() {
 
     ifstream file("../data/Reservoir.csv");
@@ -38,7 +35,6 @@ void System::readAndParseNodes() {
         delivery = stod(del);
         id = stoi(ident);
 
-        //cria reservatorio, adiciona ao grafo de strings, associa a string à informação num mapa
         Reservoir WR(name, municipality, id, code, delivery);
         codeToReservoir.insert({code, WR});
 
@@ -142,58 +138,48 @@ void System::readAndParseEdges() {
 
         }
     }
-    //tambem temos mapa de Pipes, mas nao adiciona já ao mapa e já te explico porquê
-    //Vê a função void System::initialize() para perceberes o porquê
 
 }
 
 
 
 
-// Function to test the given vertex 'w' and visit it if conditions are met
 void System::testAndVisit(std::queue< Vertex<string>*> &q, Edge<string> *e, Vertex<string> *w, double residual) {
-// Check if the vertex 'w' is not visited and there is residual capacity
     if (! w->isVisited() && residual > 0) {
-// Mark 'w' as visited, set the path through which it was reached, and enqueue it
         w->setVisited(true);
         w->setPath(e);
         q.push(w);
     }
 }
-// Function to find an augmenting path using Breadth-First Search
+
 bool System::findAugmentingPath(Graph<string>& g, Vertex<string> *s, Vertex<string> *t) {
-// Mark all vertices as not visited
     for(auto v : g.getVertexSet()) {
         v->setVisited(false);
     }
-// Mark the source vertex as visited and enqueue it
     s->setVisited(true);
     std::queue<Vertex<string> *> q;
     q.push(s);
-// BFS to find an augmenting path
+
     while( ! q.empty() && ! t->isVisited()) {
         auto v = q.front();
         q.pop();
-// Process outgoing edges
+
         for(auto e: v->getAdj()) {
             testAndVisit(q, e, e->getDest(), e->getWeight() - e->getFlow());
         }
-// Process incoming edges
+
         for(auto e: v->getIncoming()) {
             testAndVisit(q, e, e->getOrig(), e->getFlow());
         }
     }
-// Return true if a path to the target is found, false otherwise
+
     return t->isVisited();
 }
 
 
-
-
-
 double System::findMinResidualAlongPath(Vertex<string> *s, Vertex<string> *t) {
     double f = INF;
-// Traverse the augmenting path to find the minimum residual capacity
+
     for (auto v = t; v != s; ) {
         auto e = v->getPath();
         if (e->getDest() == v) {
@@ -205,12 +191,12 @@ double System::findMinResidualAlongPath(Vertex<string> *s, Vertex<string> *t) {
             v = e->getDest();
         }
     }
-// Return the minimum residual capacity
+
     return f;
 }
-// Function to augment flow along the augmenting path with the given flow value
+
 void System::augmentFlowAlongPath(Vertex<string> *s, Vertex<string> *t, double f) {
-// Traverse the augmenting path and update the flow values accordingly
+
     for (auto v = t; v != s; ) {
         auto e = v->getPath();
         double flow = e->getFlow();
@@ -227,19 +213,19 @@ void System::augmentFlowAlongPath(Vertex<string> *s, Vertex<string> *t, double f
 
 
 void System::edmondsKarp(Graph<string>& g, const string& source, const string& target) {
-// Find source and target vertices in the graph
+
     Vertex<string>* s = g.findVertex(source);
     Vertex<string>* t = g.findVertex(target);
-// Validate source and target vertices
+
     if (s == nullptr || t == nullptr || s == t)
         throw std::logic_error("Invalid source and/or target vertex");
-// Initialize flow on all edges to 0
+
     for (auto v : g.getVertexSet()) {
         for (auto e: v->getAdj()) {
             e->setFlow(0);
         }
     }
-// While there is an augmenting path, augment the flow along the path
+
     while( findAugmentingPath(g, s, t) ) {
         double f = findMinResidualAlongPath(s, t);
         augmentFlowAlongPath(s, t, f);
@@ -247,16 +233,6 @@ void System::edmondsKarp(Graph<string>& g, const string& source, const string& t
 }
 
 
-//é suposto chamarmos esta função no inicio de tudo
-//esta função vai criar as Super source e Super Target
-//vai correr pela 1a vez o EdmondsKarp
-//vai preencher finalmente o Mapa das Pipes
-//esse mapa de Pipes vai associar o código da source concatenado com o codigo da target à informação da Pipe
-//O readAndParseEdges nao adiciona logo as Pipes a esse mapa, porque só depois de correr o EdmondsKarp é que elas vao ter flow
-//e dá jeito ter o flow guardado para as outras funções
-//porque nao so vamos ter de resetar o grafo
-//como vai facilitar a procura de informação, em vez de procurar no grafo, vamos só sacar do mapa diretamente
-//sacar do mapa se n me engano, complexidade = O(1)
 void System::initialize() {
 
     Reservoir superSource("superS", "", 0, "r_Super", INF);
@@ -294,8 +270,7 @@ void System::initialize() {
         }
     }
 
-    //isto preenche um ficheiro como eles mandam fazer, com o maxflow inicial de cada cidade
-    //sem ter em conta remoções, etc
+
     std::ofstream file("../data/max_flow_output.csv", std::ios::trunc);
     std::ofstream file2("../data/max_flow_output.csv", std::ios::app);
     file2 << "CityCode" << "," << "Max Flow" << std::endl;
@@ -313,7 +288,7 @@ void System::initialize() {
 
 
 //funçao que encontra o maxflow para cada cidade
-//repara que isto só vai simplesmente buscar o maxflow que já foi calculado no initialize()
+
 void System::maxFlowSingleCity(const string &city) {
 
 
@@ -334,7 +309,6 @@ void System::maxFlowSingleCity(const string &city) {
 
 }
 
-//mesma coisa que o anterior ,as para todas as cidades uma de cada vez
 
 void System::maxFlowEachCity(){
     cout << "+--------------+--------------+" << endl;
@@ -360,7 +334,6 @@ void System::maxFlowEachCity(){
 
 
 //printa o somatório de todos os max flows
-//acho q isto tá uma beca feio, se puderes por mais Pipi era fixe
 void System::maxFlowSystem(){
     double tot = 0;
     for (const auto& par : codeToCity){
@@ -371,17 +344,16 @@ void System::maxFlowSystem(){
 }
 
 
-//compara o maxflow de cada cidade com a sua demanda e printa o quanto falta caso nao chegue à demanda
-//water deficit = demanda - maxflow
+
 void System::enoughWater() {
     cout << "+--------------+-----------------------+--------------+--------------+" << endl;
     cout << "| City Code    | Water Deficit         | Demand       | Flow         |" << endl;
     cout << "+--------------+-----------------------+--------------+--------------+" << endl;
 
-    // Create a vector of pairs from the map
+
     std::vector<std::pair<std::string, City>> cityVector(codeToCity.begin(), codeToCity.end());
 
-    // Sort the vector based on the city code
+
     sort(cityVector.begin(), cityVector.end(), [](const pair<string, City>& a, const pair<string, City>& b) {
         int cityNumA = stoi(a.first.substr(2));
         int cityNumB = stoi(b.first.substr(2));
@@ -389,7 +361,7 @@ void System::enoughWater() {
     });
 
     bool enough = true;
-    // Iterate over the sorted vector and print the results
+
     for (const auto& par : cityVector) {
         auto maxflow = par.second.getMaxFlow();
         auto demand = par.second.getDemand();
@@ -409,8 +381,7 @@ void System::enoughWater() {
 }
 
 
-//função que remove um reservatório e reseta o grafo logo a seguir
-//usada para remover um unico reservatório (ver as 3 opções do Menu)
+
 void System::removeReservoir(const string& r){
 
 
@@ -430,7 +401,7 @@ void System::removeReservoir(const string& r){
             for (auto edge : v->getIncoming()){
                 peso = edge->getWeight(); //guardar o peso da edge que vai ser removida
                 edge->setWeight(0); //só vai haver uma incoming edge para cada reservatorio (a da supersource)
-                //isto faz com que a operação seja kinda rápida
+                //isto faz com que a operação seja relativamente rápida
             }
         }
     }
@@ -454,7 +425,7 @@ void System::removeReservoir(const string& r){
             for (auto edge : v->getIncoming()) {
                 delafter += edge->getFlow(); //contagem do flow atual através das incoming edges
             }
-            double before = codeToCity.at(v->getInfo()).getMaxFlow(); //no Initialize(), setamos o maxflow de cada cidade para o maxflow default do dataset
+            double before = codeToCity.at(v->getInfo()).getMaxFlow(); //no initialize(), definimos o maxflow de cada cidade para o maxflow default do dataset
             double difference = delafter - before;
             cout << "| " << left << setw(19) << v->getInfo() << "| " << setw(13) << before << "  | " << setw(13) << delafter << " | " << setw(13) << difference << "|" << endl;
         }
@@ -463,7 +434,6 @@ void System::removeReservoir(const string& r){
 
 
     //resetar o grafo
-    //neste caso é facil porque é só resetar o peso da edge que removemos
     for (auto v : graph.getVertexSet()){
         if (v->getInfo() == r){
             for (auto edge : v->getIncoming()){
@@ -475,15 +445,9 @@ void System::removeReservoir(const string& r){
 
 
 
-//função anterior, ligeiramente alterada para nao resetar o grafo
-//existe uma diferença essencial na parte dos maxflows das cidades (ver a parte do printing)
-//esta é uma função auxiliar para a função que remove vários reservatórios, chamada removeReservoirVector
-//ao fim desta função vem a que remove permanentemente, vais perceber melhor esta quando perceberes essa
-//mas lê esta primeiro na mesma
 void System::permaremoveReservoir(const string& r){
 
 
-    //faz o mesmo que a anterior mas nao precisa de guardar o peso porque nao vai resetar já
     for (auto v : graph.getVertexSet()){
         if (v->getInfo() == r){
             for (auto edge : v->getIncoming()){
@@ -492,11 +456,9 @@ void System::permaremoveReservoir(const string& r){
         }
     }
 
-    //faz o mesmo
     edmondsKarp(graph,"r_Super","c_Super");
 
 
-    //continua a seguir o mesmo protocolo
     cout << "On removal of the following Reservoir: " << r;
     cout << endl;
     cout << "+--------------------+---------------+---------------+---------------+" << endl;
@@ -510,7 +472,7 @@ void System::permaremoveReservoir(const string& r){
                 delafter += edge->getFlow();
             }
             double before = codeToCity.at(v->getInfo()).getMaxFlow();
-            codeToCity.at(v->getInfo()).setMaxFlow(delafter); //a grande diferença está aqui
+            codeToCity.at(v->getInfo()).setMaxFlow(delafter);
             //como queremos remover reservatórios um de cada vez, temos atualizar o maxflow de cada cidade a cada remoção
             double difference = delafter - before;
             cout << "| " << left << setw(19) << v->getInfo() << "| " << setw(13) << before << "  | " << setw(13) << delafter << " | " << setw(13) << difference << "|" << endl;
@@ -525,7 +487,7 @@ void System::permaremoveReservoir(const string& r){
 void System::removeReservoirVector(const vector<string>& vetor) {
 
     //guardamos os mapas para nao perdermos a informação ao atualizar os maxflows
-    auto map2 = codeToReservoir; //acho que entretanto esta linha ficou desnecessaria agr q vejo bem
+    auto map2 = codeToReservoir;
     auto map3 = codeToCity;
 
     //vetor para guardar os reservatórios removidos previamente
@@ -539,7 +501,7 @@ void System::removeReservoirVector(const vector<string>& vetor) {
             //chama a função de remover permanentemente
             //lembrar que isto vai atualizar o maxflow de cada cidade
             permaremoveReservoir(r);
-            codeToReservoir = map2; //eu acho que ja nem precisamos desta linha porque isto foi antes de eu otimizar a situação
+            codeToReservoir = map2;
 
             //adicionar o reservatorio ao vetor de removidos
             removed.emplace_back(r, codeToReservoir.at(r).getDelivery());
@@ -554,7 +516,6 @@ void System::removeReservoirVector(const vector<string>& vetor) {
 
     codeToCity = map3; //faz-se isto para resetar os maxflows, visto que as permaremove functions atualizam os maxflows das cidades a cada remoção
 
-    //reset the graph using the "removed" vector of pairs to reset the weights
     for (auto v : graph.getVertexSet()){
         //para cada vertex
         if (v->getInfo()[0] == 'r'){
@@ -565,12 +526,12 @@ void System::removeReservoirVector(const vector<string>& vetor) {
                     //para cada par no vetor de removidos
                     if (e->getDest()->getInfo() == p.first){
                         //se o destino da edge for igual ao código do reservatório
-                        e->setWeight(p.second); //setar o peso da edge para o peso que tinha anteriormente
+                        e->setWeight(p.second); //definir o peso da edge para o peso que tinha anteriormente
                         break; //sair do loop porque só temos de mexer numa edge por reservatório e já a encontramos
                     }
                 }
             }
-            break; //sair do loop principal porque só temos de mexer na Supersource, ela tá ligada a todos os reservatorios
+            break; //sair do loop principal porque só temos de mexer na Supersource, ela está ligada a todos os reservatorios
         }
     }
 
@@ -626,9 +587,6 @@ void System::removePS(const string& ps){
 
 
     //resetar o grafo
-    //isto reseta flows e Weights de todas as edges
-    //visto que temos de resetar o flow de todas de qualquer das formas,
-    //nao vale a pena ter ifs constantemente a verificarem se elas vão para a estação que removemos
     for (auto v : graph.getVertexSet()){
         if (v->getInfo()[0] != 'r' && v->getInfo()[0] != 'c'){
             for (auto edge : v->getAdj()){
@@ -636,11 +594,7 @@ void System::removePS(const string& ps){
                 //a supersource e a supertarget nao fazem parte dos maps então ia dar erros ao tentar acedê-las
                 string source = edge->getOrig()->getInfo();
                 string target = edge->getDest()->getInfo();
-                edge->setFlow(codesToPipe.at(source+target).getFlow());//acho que esta linha entretanto deixou de ser necessaria
-                //testa e tenta ver se dá asneira se a tirares pfv xD
-
-                //se nao der asneira, podemos só resetar a capacity das edges que vao para a estação removida e depois dar logo break
-                //isso ia optimizar a situassom
+                edge->setFlow(codesToPipe.at(source+target).getFlow());
                 edge->setWeight(codesToPipe.at(source+target).getCapacity());
             }
         }
@@ -651,11 +605,7 @@ void System::removePS(const string& ps){
 //esta vai ser a auxiliar de remoção de vector com códigos de pumping stations
 void System::permaremovePS(const string& ps){
 
-    //remover o peso da edges que vao para a station
-    //nao sei porquê, mas isto tava a dar pró torto neste caso quando nao removia as Outgoing tambem
-    //mas acho que só devia ser necessario remover as Incoming, parece fazer mais sentido
-    //até pq na anterior (a q nao remove permanentemente) nao deu asneira remover só as incoming
-    //se perceberes e conseguires otimizar sem dar merda nos outputs tás à vontade xD
+
     for (auto v : graph.getVertexSet()){
         if (v->getInfo() == ps){
             for (auto e : v->getAdj()){
@@ -668,7 +618,6 @@ void System::permaremovePS(const string& ps){
         }
     }
 
-    //Já podemos mandar o edmonds
     edmondsKarp(graph,"r_Super","c_Super");
 
     cout << "On removal of the following pumping station: " << ps;
@@ -698,12 +647,6 @@ void System::removePSVector(const vector<string>& vetor) {
     //guardar a informação
     auto map3 = codeToCity;
 
-    vector<string> removed; //vetor para dar track ao que ja foi removido
-    //entretanto ja nem usamos isto, ao resetar as edges todas dá para descomplicar.
-    //No entanto, como a supersource nao faz parte do map, no dos reservatórios tive de ir pela maneira mais complexa um bocado
-    //porque visto q elas nao tao no map,
-    //por um lado é mais dificil fazer o codigo, mas por outro, a versao dos reservatorios é menos complexa temporalmente pq basta encontrar a supersource ao iterar o grafo e resetar uma só edge
-
 
     for (const auto& ps : vetor){
         if (codeToStation.find(ps) != codeToStation.end()){
@@ -722,8 +665,6 @@ void System::removePSVector(const vector<string>& vetor) {
     for (auto v : graph.getVertexSet()){
         if (v->getInfo()[0] != 'r' && v->getInfo()[0] != 'c'){
             for (auto edge : v->getAdj()){
-                //aquele loopzinho classico que ja expliquei em cima que reseta as edges todas
-                //todas menos as da supersource e da supertarget porque nao estao nos mapas
                 string source = edge->getOrig()->getInfo();
                 string target = edge->getDest()->getInfo();
                 edge->setFlow(codesToPipe.at(source+target).getFlow());
@@ -733,7 +674,6 @@ void System::removePSVector(const vector<string>& vetor) {
     }
 }
 
-//outra vez arroz mas para Pipes, Pipe = Edge
 void System::removePipe(const string& pa, const string& pb){
 
     if (codesToPipe.find(pa+pb) == codesToPipe.end()){
@@ -804,7 +744,6 @@ void System::removePipe(const string& pa, const string& pb){
     for (auto v : graph.getVertexSet()){
         if (v->getInfo()[0] != 'r' && v->getInfo()[0] != 'c'){
             for (auto e : v->getAdj()){
-                //loop do costume que (remember) acho que dá pra ser otimizado mas faz cuidado plz
                 string source = e->getOrig()->getInfo();
                 string target = e->getDest()->getInfo();
                 e->setFlow(codesToPipe.at(source+target).getFlow());
@@ -814,7 +753,6 @@ void System::removePipe(const string& pa, const string& pb){
     }
 }
 
-//arroz, mas a versão que remove permanentemente
 void System::permaremovePipe(const string& pa, const string& pb){
 
 
@@ -868,7 +806,7 @@ void System::permaremovePipe(const string& pa, const string& pb){
                 delafter += edge->getFlow();
             }
             double before = codeToCity.at(v->getInfo()).getMaxFlow();
-            codeToCity.at(v->getInfo()).setMaxFlow(delafter); //arroz que muda o maxflow
+            codeToCity.at(v->getInfo()).setMaxFlow(delafter);
             double difference = delafter - before;
             cout << "| " << left << setw(19) << v->getInfo() << "| " << setw(13) << before << "  | " << setw(13) << delafter << " | " << setw(13) << difference << "|" << endl;
         }
@@ -878,14 +816,9 @@ void System::permaremovePipe(const string& pa, const string& pb){
 }
 
 
-//arroz de vector
 void System::removePipeVector(const vector<string>& vetor) {
 
-    auto map2 = codeToReservoir; //guardar a informação (rice)
-    //ya esta cena do codetoreservoir decerteza q ja deixou de ser necessaria la em cima
-    //eu é que tou com medo de alterar
-    //sou um conas
-
+    auto map2 = codeToReservoir;
     auto map3 = codeToCity;
 
 
@@ -905,9 +838,8 @@ void System::removePipeVector(const vector<string>& vetor) {
 
     //resetar a informação
 
-    codeToCity = map3; //arroz de resetar maxflows
+    codeToCity = map3;
 
-    //arroz de reset do costume
     for (auto v : graph.getVertexSet()){
         if(v->getInfo()[0] != 'r' && v->getInfo()[0] != 'c'){
             for (auto edge : v->getAdj()){
@@ -919,21 +851,3 @@ void System::removePipeVector(const vector<string>& vetor) {
         }
     }
 }
-
-
-//chegaste ao fim mano és o goat qq coisa manda mensagem eu devo acordar la pas 11 em principio
-//desculpa nao ir à aula, espero que te tenha ocupado a maioria das 2h
-
-//agora que mt provavelmente já percebeste as cenas, tenho uma pergunta que me surgiu ao comentar
-//achas que o que eles querem é que, ao remover permanentemente, nao resetemos logo o grafo,
-//mas que simplesmente dê para fazer todas as operações anteriores com a nova versao do grafo?
-//por exemplo, achas que eles querem que, depois de removermos uma cena, ao ir fazer o MaxFlowEachCity,
-//ele faça tendo em conta a nova versão do grafo, ou só a original?
-//é que se sim, nao era mt complexo de fazer, era mesmo só criar uma função de reset e adaptar um bocado aqui o system
-//mas nao sei se é isso que eles querem, se calhar é só para resetar logo
-
-//eu fico na duvida pq cm podes já ter visto, a nossa versão mostra todas as mudanças q acontecem ao remover
-//entao nao me pareceu muito necessario fazer isso de nao resetar
-
-
-//para finalizar faltam fazer os pseudocodigos do 2.3 e do 3.1 tho
