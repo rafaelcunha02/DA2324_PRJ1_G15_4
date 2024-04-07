@@ -25,6 +25,7 @@
 var NAVTREE =
 [
   [ "Pipe-way Management System", "index.html", [
+    [ "Design of Algorithms Project 1", "index.html", null ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
       [ "Class Index", "classes.html", null ],

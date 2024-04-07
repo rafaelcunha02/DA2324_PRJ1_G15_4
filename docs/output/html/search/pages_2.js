@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['system_0',['Pipe-way Management System',['../index.html',1,'']]]
+  ['design_20of_20algorithms_20project_201_0',['Design of Algorithms Project 1',['../index.html',1,'']]]
 ];

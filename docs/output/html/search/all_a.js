@@ -1,9 +1,5 @@
 var searchData=
 [
-  ['permaremovepipe_0',['permaremovePipe',['../class_system.html#ade025c7a25698187c5e871dbfa670be1',1,'System']]],
-  ['permaremoveps_1',['permaremovePS',['../class_system.html#a70d285acdd6125107fd7d4dc595fc3d2',1,'System']]],
-  ['permaremovereservoir_2',['permaremoveReservoir',['../class_system.html#a95a607617c732477cf7c43efca7ae98b',1,'System']]],
-  ['pipe_3',['pipe',['../class_pipe.html',1,'Pipe'],['../class_pipe.html#ad9b5dc071b421dc1b45325dd88b50226',1,'Pipe::Pipe()']]],
-  ['pipe_20way_20management_20system_4',['Pipe-way Management System',['../index.html',1,'']]],
-  ['population_5',['population',['../class_city.html#a02355b0d03c7c1fdaf04496fc3b20330',1,'City']]]
+  ['of_20algorithms_20project_201_0',['Design of Algorithms Project 1',['../index.html',1,'']]],
+  ['operator_3d_3d_1',['operator==',['../class_city.html#aac4df03525247a9f8f6937a1c0c2f083',1,'City::operator==()'],['../class_pipe.html#ad5f939abd3895ddb774fd23b152b93bb',1,'Pipe::operator==()'],['../class_reservoir.html#a9fa549a2a70943c82a67a86da9fb5d80',1,'Reservoir::operator==()'],['../class_station.html#a8a7eae4c39f16d6f04f2c4d1ca1a1f57',1,'Station::operator==()']]]
 ];
