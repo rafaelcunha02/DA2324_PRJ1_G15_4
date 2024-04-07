@@ -7,7 +7,6 @@ var class_reservoir =
     [ "getMunicipality", "class_reservoir.html#a05b3ae3fe93212c1e5608cd5aeee1231", null ],
     [ "getName", "class_reservoir.html#aa73308e734ce198e2217ce00205763ba", null ],
     [ "operator==", "class_reservoir.html#a9fa549a2a70943c82a67a86da9fb5d80", null ],
-    [ "setDelivery", "class_reservoir.html#a745bda5b8de74d7820ecd81144d9d54b", null ],
     [ "code", "class_reservoir.html#a3fc5d2e32005b3743a04192add410618", null ],
     [ "delivery", "class_reservoir.html#a3ea2b18f78bb9398aa3c86630cfa4d1b", null ],
     [ "id", "class_reservoir.html#ae8e0a21e8823a973da261d717eddc07d", null ],

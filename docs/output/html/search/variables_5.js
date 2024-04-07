@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['name_68',['name',['../class_city.html#afea8cd8800a8600fa54af37ac05bf177',1,'City::name()'],['../class_reservoir.html#acb05c4d9d972bca7021abb723aff268a',1,'Reservoir::name()']]]
+  ['maxflow_0',['maxflow',['../class_city.html#af8828adc50e841d6f18b96dfde79611b',1,'City']]],
+  ['municipality_1',['municipality',['../class_reservoir.html#a242117a3519374cdaff488b7b1e8c4ed',1,'Reservoir']]]
 ];

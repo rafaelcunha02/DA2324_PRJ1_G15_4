@@ -1,5 +1,9 @@
 var searchData=
 [
-  ['reservoir_27',['Reservoir',['../class_reservoir.html',1,'Reservoir'],['../class_reservoir.html#a65b4b1d7702f86c930c7793e1c31aa2c',1,'Reservoir::Reservoir()']]],
-  ['run_28',['run',['../class_app.html#ae09dc71078b64c56c673b1ad1d25b5d1',1,'App']]]
+  ['permaremovepipe_0',['permaremovePipe',['../class_system.html#ade025c7a25698187c5e871dbfa670be1',1,'System']]],
+  ['permaremoveps_1',['permaremovePS',['../class_system.html#a70d285acdd6125107fd7d4dc595fc3d2',1,'System']]],
+  ['permaremovereservoir_2',['permaremoveReservoir',['../class_system.html#a95a607617c732477cf7c43efca7ae98b',1,'System']]],
+  ['pipe_3',['pipe',['../class_pipe.html',1,'Pipe'],['../class_pipe.html#ad9b5dc071b421dc1b45325dd88b50226',1,'Pipe::Pipe()']]],
+  ['pipe_20way_20management_20system_4',['Pipe-way Management System',['../index.html',1,'']]],
+  ['population_5',['population',['../class_city.html#a02355b0d03c7c1fdaf04496fc3b20330',1,'City']]]
 ];
